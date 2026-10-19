@@ -1,0 +1,13 @@
+{
+  "name": "conectaedu",
+  "version": "0.1.0",
+  "private": true,
+  "description": "ConectaEdu · prototipo clicable con datos de ejemplo (Fase 0)",
+  "scripts": {
+    "start": "node servidor.js",
+    "test": "node --test"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}
