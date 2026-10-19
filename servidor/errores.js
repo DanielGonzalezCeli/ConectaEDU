@@ -11,6 +11,7 @@ const MENSAJES = {
   modelo_no_encontrado: [502, 'El modelo configurado en PROVEEDOR_IA_MODELO no existe o no está disponible para esta clave.'],
   limite_proveedor: [429, 'El proveedor de IA está recibiendo demasiadas solicitudes. Espera un momento y vuelve a intentar.'],
   sobrecargado: [503, 'El proveedor de IA está sobrecargado en este momento. Vuelve a intentar en unos segundos.'],
+  limite_ip: [429, 'Se hicieron demasiadas solicitudes desde esta conexión en la última hora. Espera unos minutos.'],
   limite_local: [429, 'Se alcanzó el límite de llamadas por hora configurado en LIMITE_LLAMADAS_POR_HORA.'],
   tiempo_agotado: [504, 'El modelo tardó más de 60 segundos en responder. Vuelve a intentar.'],
   red: [502, 'No se pudo conectar con el proveedor de IA. Revisa la conexión a internet.'],

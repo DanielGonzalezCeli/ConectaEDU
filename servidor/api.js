@@ -8,6 +8,7 @@ const { crearClienteIA } = require('./cliente-ia');
 const { crearRegistroUso } = require('./uso');
 const { calificar } = require('./calificar');
 const { responderTutor } = require('./tutor');
+const { crearLimitador, ipDe } = require('./acceso');
 
 const LIMITE_CUERPO = 8 * 1024 * 1024; // 8 MB por solicitud
 
@@ -41,6 +42,8 @@ function enviarJSON(res, estado, objeto) {
 // opciones: { config, fetch?, rutaUso?, ahora?, esperaReintentoMs?, tiempoEsperaMs? }
 function crearAPI({ config, fetch, rutaUso = path.join(__dirname, '..', 'resultados', 'uso.csv'), ahora, esperaReintentoMs, tiempoEsperaMs }) {
   const uso = crearRegistroUso({ limite: config.limite, ruta: rutaUso, ahora });
+  const porIp = crearLimitador({ max: config.limitePorIp || 40, ventanaMs: 3600e3, ahora });
+  const revisarIp = req => { if (!porIp.permitir(ipDe(req, config.confiarProxy))) throw new ErrorIA('limite_ip'); };
   const cliente = config.clave
     ? crearClienteIA({ clave: config.clave, modelo: config.modelo, uso, fetch, esperaReintentoMs, tiempoEsperaMs })
     : null;
@@ -54,11 +57,13 @@ function crearAPI({ config, fetch, rutaUso = path.join(__dirname, '..', 'resulta
     'GET /api/estado': async () => estado(),
     'POST /api/calificar': async req => {
       if (!cliente) throw new ErrorIA('sin_clave');
+      revisarIp(req);
       const resultado = await calificar(await leerJSON(req), { cliente, esfuerzo: config.esfuerzo.calificar });
       return Object.assign(resultado, { estadoIA: estado() });
     },
     'POST /api/tutor': async req => {
       if (!cliente) throw new ErrorIA('sin_clave');
+      revisarIp(req);
       const resultado = await responderTutor(await leerJSON(req), { cliente, esfuerzoTutor: config.esfuerzo.tutor, esfuerzoRevisor: config.esfuerzo.revisor });
       return Object.assign(resultado, { estadoIA: estado() });
     }

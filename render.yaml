@@ -1,0 +1,31 @@
+# Despliegue de ConectaEdu en Render (Blueprint). Guía: docs/despliegue-render.md
+# Las claves NO van aquí: se escriben en el panel de Render (sync: false).
+services:
+  - type: web
+    name: conectaedu
+    runtime: node
+    plan: free
+    branch: feat/modo-real
+    buildCommand: npm install
+    startCommand: node servidor.js
+    healthCheckPath: /salud
+    autoDeploy: true
+    envVars:
+      - key: NODE_VERSION
+        value: "22"
+      - key: HOST
+        value: 0.0.0.0
+      - key: CONFIAR_PROXY
+        value: "1"
+      - key: PROVEEDOR_IA_MODELO
+        value: claude-sonnet-5-5
+      - key: LIMITE_LLAMADAS_POR_HORA
+        value: "60"
+      - key: LIMITE_POR_IP_POR_HORA
+        value: "40"
+      - key: ESFUERZO_CALIFICAR
+        value: medium
+      - key: PROVEEDOR_IA_CLAVE
+        sync: false
+      - key: CLAVE_ACCESO
+        sync: false

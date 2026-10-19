@@ -140,7 +140,7 @@ async function calificarEnCola(items, calificarUno, alCambiar) {
             return;
           }
           t.estadoIA = 'error'; t.error = err.message;
-          if (err.codigo === 'limite_local' || err.codigo === 'sin_clave' || err.codigo === 'http_401') {
+          if (['limite_local', 'limite_ip', 'sin_clave', 'sin_acceso', 'http_401'].includes(err.codigo)) {
             detenido = true;
             cola.splice(0).forEach(x => { x.estadoIA = 'error'; x.error = err.message; });
           }

@@ -46,6 +46,11 @@ function leerConfig(env = process.env) {
     modoIA: clave ? 'real' : 'simulado',
     modelo: String(env.PROVEEDOR_IA_MODELO || '').trim() || MODELO_POR_DEFECTO,
     limite: limite > 0 ? limite : 60,
+    // Despliegue público (Render): clave de acceso, límite por IP y proxy.
+    claveAcceso: String(env.CLAVE_ACCESO || '').trim(),
+    limitePorIp: parseInt(env.LIMITE_POR_IP_POR_HORA, 10) > 0 ? parseInt(env.LIMITE_POR_IP_POR_HORA, 10) : 40,
+    confiarProxy: ['1', 'true', 'si', 'sí'].includes(String(env.CONFIAR_PROXY || '').trim().toLowerCase()),
+    host: String(env.HOST || '').trim() || '127.0.0.1',
     esfuerzo: {
       calificar: esfuerzo(env.ESFUERZO_CALIFICAR, 'medium'),
       tutor: esfuerzo(env.ESFUERZO_TUTOR, 'low'),
