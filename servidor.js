@@ -6,7 +6,7 @@ const path = require('node:path');
 
 const PUERTO = Number(process.env.PORT) || 8000;
 const RAIZ = __dirname;
-const TIPOS = { '.html': 'text/html; charset=utf-8', '.css': 'text/css; charset=utf-8', '.js': 'text/javascript; charset=utf-8' };
+const TIPOS = { '.html': 'text/html; charset=utf-8', '.css': 'text/css; charset=utf-8', '.js': 'text/javascript; charset=utf-8', '.svg': 'image/svg+xml' };
 
 http.createServer((req, res) => {
   const ruta = decodeURIComponent(new URL(req.url, 'http://localhost').pathname);
