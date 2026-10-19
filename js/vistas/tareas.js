@@ -164,6 +164,7 @@ function vistaTarea(claseId, tareaId) {
         (tarea.real ? '<span class="etiqueta e-ok">IA real · ' + esc((tarea.trabajos.find(t => t.modelo) || {}).modelo || IA.modelo || '') + '</span>' : '<span class="etiqueta e-sim">simuladas</span>') + '</h2>' +
         '<p class="nota">Son sugerencias. Puedes cambiar cualquier criterio y tú apruebas la nota final. Los de confianza baja aparecen primero.</p>' +
         '<div class="tabla-envoltura"><table class="apilable"><thead><tr><th>Estudiante</th><th>Nota sugerida</th><th>Confianza</th><th>Estado</th><th></th></tr></thead><tbody id="filas-calif"></tbody></table></div>' +
+        (tarea.real ? '<p class="costo-lote" id="costo-lote" aria-live="polite"></p>' : '') +
         '<div id="detalle-calif"></div>' +
         '<div class="fila" style="margin-top:16px"><button class="btn sec" id="btn-exportar">' + icono('descargar') + 'Descargar CSV para el aula virtual</button><span class="nota" style="margin:0" id="aviso-exportar"></span></div>' +
       '</div>' +
@@ -240,6 +241,8 @@ function pintarResultados(tarea) {
     reintentarTrabajo(tarea, trabajos.find(t => t.id === b.dataset.reintentar));
   }));
   const calificados = trabajos.filter(t => !tarea.real || t.estadoIA === 'listo');
+  const costo = document.getElementById('costo-lote');
+  if (costo) costo.textContent = textoCostoLote(tarea);
   const aprobadas = trabajos.filter(t => t.estado === 'Aprobada').length;
   const porRevisar = calificados.filter(t => marcar(t) && t.estado !== 'Aprobada').length;
   document.getElementById('metricas-calif').innerHTML =
@@ -265,7 +268,7 @@ function verDetalle(tarea, id) {
   const real = !!t.modelo;
   const ESTADO_CITA = { verificada: 'cita verificada en el texto', no_verificada: 'cita NO verificada', no_verificable: 'cita de PDF: compárala con el documento' };
   let html = '<div class="detalle"><div class="fila"><h2 style="margin:0;font-size:17px;color:var(--puce)">' + esc(t.id) + '</h2>' +
-    (real ? '<span class="etiqueta e-ok">IA real · ' + esc(t.modelo) + '</span>' : '') + '<span class="espacio"></span><button class="btn fantasma chico" id="btn-cerrar">Cerrar</button></div>';
+    (real ? '<span class="etiqueta e-ok">IA real · ' + esc(t.modelo) + '</span><span class="costo-trabajo">' + textoCostoTrabajo(t) + '</span>' : '') + '<span class="espacio"></span><button class="btn fantasma chico" id="btn-cerrar">Cerrar</button></div>';
   if (real && t.advertencias && t.advertencias.length) {
     html += '<div class="advertencias">' + icono('alerta') + '<div><b>Revisa esto primero</b><ul>' + t.advertencias.map(a => '<li>' + esc(a) + '</li>').join('') + '</ul></div></div>';
   }

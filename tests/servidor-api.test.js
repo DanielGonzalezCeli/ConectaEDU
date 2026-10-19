@@ -161,5 +161,7 @@ test('la respuesta de /api/calificar trae la forma que usa la pantalla', async (
     assert.equal(r.uso.tokensEntrada, 1000);
     assert.equal(r.uso.tokensSalida, 200);
     assert.equal(r.modelo, 'claude-sonnet-5-5');
+    // 1000 tokens de entrada a US$ 2/M + 200 de salida a US$ 10/M = US$ 0,004
+    assert.equal(r.costoUSD, 0.004);
   });
 });

@@ -435,3 +435,7 @@ th.n, td.n { text-align: right; font-variant-numeric: tabular-nums; }
 @media (max-width: 900px) {
   .archivo .tipo, .lateral nav a .cuenta { font-size: 12px; }
 }
+
+/* Tokens y costo de la IA */
+.costo-lote { font-size: 13.5px; color: var(--suave); margin: 10px 0 0; font-variant-numeric: tabular-nums; }
+.costo-trabajo { font-size: 12.5px; color: var(--suave); font-variant-numeric: tabular-nums; }

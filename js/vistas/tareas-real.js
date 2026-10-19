@@ -132,7 +132,7 @@ async function calificarTrabajoReal(tarea, t) {
   });
   Object.assign(t, {
     puntos: r.puntos, just: r.just, cita: r.cita, citas: r.citas, estadoCitas: r.estadoCitas, confianzas: r.confianzas,
-    confianza: r.confianza, advertencias: r.advertencias, comentarioGeneral: r.comentarioGeneral, modelo: r.modelo, uso: r.uso,
+    confianza: r.confianza, advertencias: r.advertencias, comentarioGeneral: r.comentarioGeneral, modelo: r.modelo, uso: r.uso, costoUSD: r.costoUSD,
     final: r.puntos.slice(), estado: 'Sugerida', aprobacion: null,
     revisar: r.confianza === 'Baja' || r.advertencias.some(x => /recortó|no verificada|no devolvió/.test(x))
   });
@@ -244,9 +244,43 @@ function resultadosSesion(tarea) {
     // No se incluye el texto de los trabajos.
     trabajos: tarea.trabajos.map(t => ({ id: t.id, estadoIA: t.estadoIA, error: t.error, sugerenciaIA: t.puntos, notaFinal: t.final, justificaciones: t.just,
       citas: t.citas, estadoCitas: t.estadoCitas, confianzas: t.confianzas, confianza: t.confianza, advertencias: t.advertencias,
-      comentarioGeneral: t.comentarioGeneral, notasDocenteAMano: t.notasDocente, estado: t.estado, aprobacion: t.aprobacion, uso: t.uso })),
+      comentarioGeneral: t.comentarioGeneral, notasDocenteAMano: t.notasDocente, estado: t.estado, aprobacion: t.aprobacion, uso: t.uso, costoUSD: t.costoUSD })),
+    costoIA: totalesCosto(tarea),
     comparacion: tarea.comparacion || null
   };
+}
+
+/* ---------- Tokens y costo de la IA ----------
+   Vienen del servidor: tokens medidos por la API y tarifa pública del modelo.
+   Solo cuentan las calificaciones que terminaron bien (los intentos fallidos
+   también pueden cobrarse y no se suman aquí). */
+const usd = n => 'US$ ' + Number(n).toLocaleString('es', { minimumFractionDigits: 3, maximumFractionDigits: 4 });
+
+function totalesCosto(tarea) {
+  const listos = tarea.trabajos.filter(t => t.estadoIA === 'listo' && t.uso);
+  const conCosto = listos.filter(t => typeof t.costoUSD === 'number');
+  return {
+    trabajos: listos.length,
+    llamadas: listos.reduce((s, t) => s + (t.uso.llamadas || 1), 0),
+    tokensEntrada: listos.reduce((s, t) => s + (t.uso.tokensEntrada || 0), 0),
+    tokensSalida: listos.reduce((s, t) => s + (t.uso.tokensSalida || 0), 0),
+    costoUSD: conCosto.length === listos.length && listos.length ? Math.round(conCosto.reduce((s, t) => s + t.costoUSD, 0) * 1e6) / 1e6 : null
+  };
+}
+
+function textoCostoLote(tarea) {
+  const c = totalesCosto(tarea);
+  if (!c.trabajos) return '';
+  return 'Costo de la IA en esta tarea: ' + plural(c.trabajos, 'trabajo calificado', 'trabajos calificados') + ' · ' + plural(c.llamadas, 'llamada', 'llamadas') + ' · ' +
+    c.tokensEntrada.toLocaleString('es') + ' tokens de entrada y ' + c.tokensSalida.toLocaleString('es') + ' de salida · ' +
+    (c.costoUSD !== null ? usd(c.costoUSD) + ' (' + usd(c.costoUSD / c.trabajos) + ' por trabajo)' : 'costo no disponible para este modelo') +
+    '. Tarifa pública del proveedor; no incluye intentos fallidos.';
+}
+
+function textoCostoTrabajo(t) {
+  if (!t.uso) return '';
+  return t.uso.tokensEntrada.toLocaleString('es') + ' tokens de entrada · ' + t.uso.tokensSalida.toLocaleString('es') + ' de salida' +
+    (typeof t.costoUSD === 'number' ? ' · ' + usd(t.costoUSD) : '') + (t.uso.llamadas > 1 ? ' · ' + t.uso.llamadas + ' llamadas' : '');
 }
 
 function enlazarResultadosReal(raiz, tarea) {

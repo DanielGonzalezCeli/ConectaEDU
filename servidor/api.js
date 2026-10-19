@@ -5,7 +5,7 @@
 const path = require('node:path');
 const { ErrorIA, cuerpoError } = require('./errores');
 const { crearClienteIA } = require('./cliente-ia');
-const { crearRegistroUso } = require('./uso');
+const { crearRegistroUso, costoUSD } = require('./uso');
 const { calificar } = require('./calificar');
 const { responderTutor } = require('./tutor');
 const { crearLimitador, ipDe } = require('./acceso');
@@ -59,13 +59,14 @@ function crearAPI({ config, fetch, rutaUso = path.join(__dirname, '..', 'resulta
       if (!cliente) throw new ErrorIA('sin_clave');
       revisarIp(req);
       const resultado = await calificar(await leerJSON(req), { cliente, esfuerzo: config.esfuerzo.calificar });
-      return Object.assign(resultado, { estadoIA: estado() });
+      // Costo con los tokens medidos y la tarifa pública (null si el modelo no está en la tabla).
+      return Object.assign(resultado, { costoUSD: costoUSD(resultado.modelo, resultado.uso), estadoIA: estado() });
     },
     'POST /api/tutor': async req => {
       if (!cliente) throw new ErrorIA('sin_clave');
       revisarIp(req);
       const resultado = await responderTutor(await leerJSON(req), { cliente, esfuerzoTutor: config.esfuerzo.tutor, esfuerzoRevisor: config.esfuerzo.revisor });
-      return Object.assign(resultado, { estadoIA: estado() });
+      return Object.assign(resultado, { costoUSD: costoUSD(resultado.modelo, resultado.uso), estadoIA: estado() });
     }
   };
 
