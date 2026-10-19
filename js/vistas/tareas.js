@@ -13,7 +13,7 @@ function seccionTareas(clase) {
   const nueva = '<a class="btn" href="#/docente/clase/' + clase.id + '/tareas/nueva">' + icono('mas') + 'Nueva tarea</a>';
   const cuerpo = clase.tareas.length
     ? '<div class="tabla-envoltura"><table><thead><tr><th>Tarea</th><th>Entrega</th><th>Trabajos</th><th>Estado</th><th></th></tr></thead><tbody>' +
-      clase.tareas.map(t => '<tr><td><b>' + esc(t.nombre) + '</b>' + (t.archivos.some(a => a.ejemplo) ? ' <span class="etiqueta e-sim">ejemplo</span>' : '') + '</td><td>' + esc(t.entrega || '—') + '</td><td>' + t.archivos.length + '</td><td>' + estadoTarea(t) + '</td>' +
+      clase.tareas.map(t => '<tr><td><b>' + esc(t.nombre) + '</b>' + (t.archivos.some(a => a.ejemplo) ? ' <span class="etiqueta e-sim">ejemplo</span>' : '') + (t.real ? ' <span class="etiqueta e-ok">IA real</span>' : '') + '</td><td>' + esc(t.entrega || '—') + '</td><td>' + t.archivos.length + '</td><td>' + estadoTarea(t) + '</td>' +
         '<td><a class="btn chico sec" href="#/docente/clase/' + clase.id + '/tareas/' + t.id + '">Abrir</a></td></tr>').join('') +
       '</tbody></table></div>'
     : vacio('tarea', 'Todavía no hay tareas', 'Crea una tarea, define tu rúbrica y sube los trabajos. El asistente sugiere una nota por criterio y tú decides la nota final.', nueva);
@@ -52,8 +52,10 @@ function vistaNuevaTarea(claseId) {
         '<td><button class="quitar" data-quitar="' + i + '" title="Quitar criterio">' + icono('basura') + '</button></td></tr>').join('') +
       '</tbody></table></div>' +
       '<div class="fila" style="margin:12px 0 16px"><button class="btn sec chico" id="agregar">' + icono('mas') + 'Agregar criterio</button><button class="btn fantasma chico" id="usar-ejemplo">Usar la rúbrica de ejemplo (ensayo sobre 10)</button><span class="espacio"></span><b>Total: <span id="total">' + fmt(total) + '</span> puntos</b></div>' +
-      (rubricaEsEjemplo({ criterios: b.criterios }) ? '' : infoSim('En este prototipo, la calificación simulada solo existe para la <b>rúbrica de ejemplo</b>. Con una rúbrica propia podrás crear la tarea, pero la calificación real llegará en la Fase 2.')) +
+      (modoReal() || rubricaEsEjemplo({ criterios: b.criterios }) ? '' : infoSim('En este prototipo, la calificación simulada solo existe para la <b>rúbrica de ejemplo</b>. Con una rúbrica propia podrás crear la tarea, pero la calificación real llegará en la Fase 2.')) +
       '<div class="fila fin"><button class="btn fantasma" id="ant">' + icono('atras') + 'Atrás</button><button class="btn" id="sig">Siguiente ' + icono('flecha') + '</button></div>';
+  } else if (modoReal()) {
+    cuerpo = cuerpoTrabajosReal(b);
   } else {
     cuerpo =
       '<h2>' + icono('subir') + 'Trabajos de los estudiantes</h2><p class="nota">Sube el lote completo de una vez.</p>' +
@@ -98,6 +100,8 @@ function vistaNuevaTarea(claseId) {
           b.criterios.forEach(c => { c.max = Number(c.max); });
           b.paso = 2; render();
         });
+      } else if (modoReal()) {
+        enlazarTrabajosReal(raiz, b, clase, claseId);
       } else {
         enlazarZonaSubida($('#zona'), $('#archivo'), archivos => {
           archivos.forEach(f => b.archivos.push({ nombre: f.name, tamano: f.size }));
@@ -138,7 +142,10 @@ function vistaTarea(claseId, tareaId) {
   let html = '<div class="miga"><a href="#/docente/clase/' + claseId + '/tareas">Tareas</a> / ' + esc(tarea.nombre) + '</div>' +
     '<div class="encabezado"><div><h1>' + esc(tarea.nombre) + '</h1><p>' + (tarea.entrega ? 'Entrega: ' + esc(tarea.entrega) + ' · ' : '') + tarea.archivos.length + ' trabajos · rúbrica sobre ' + totalRubrica + '</p></div>' + estadoTarea(tarea) + '</div>';
 
-  if (!tarea.calificada) {
+  if (tarea.real && !tarea.calificada) {
+    html += vistaPreviaReal(tarea, tablaRubrica);
+  } else if (!tarea.calificada) {
+    if (modoReal()) html += infoSim('Esta tarea es de <b>ejemplo</b>: sus archivos no tienen contenido y su calificación es <b>simulada</b>. Para usar la IA real, crea una tarea nueva y sube o pega los trabajos.');
     html +=
       '<div class="tarjeta"><h2>' + icono('lapiz') + 'Rúbrica</h2><p class="nota">El asistente solo califica con estos criterios.</p>' + tablaRubrica + '</div>' +
       '<div class="tarjeta"><h2>' + icono('archivo') + 'Trabajos recibidos</h2>' +
@@ -153,12 +160,14 @@ function vistaTarea(claseId, tareaId) {
   } else {
     html +=
       '<div class="metricas" id="metricas-calif"></div>' +
-      '<div class="tarjeta"><h2>' + icono('chispa') + 'Notas sugeridas <span class="etiqueta e-sim">simuladas</span></h2>' +
+      '<div class="tarjeta"><h2>' + icono('chispa') + 'Notas sugeridas ' +
+        (tarea.real ? '<span class="etiqueta e-ok">IA real · ' + esc((tarea.trabajos.find(t => t.modelo) || {}).modelo || IA.modelo || '') + '</span>' : '<span class="etiqueta e-sim">simuladas</span>') + '</h2>' +
         '<p class="nota">Son sugerencias. Puedes cambiar cualquier criterio y tú apruebas la nota final. Los de confianza baja aparecen primero.</p>' +
         '<div class="tabla-envoltura"><table><thead><tr><th>Estudiante</th><th>Nota sugerida</th><th>Confianza</th><th>Estado</th><th></th></tr></thead><tbody id="filas-calif"></tbody></table></div>' +
         '<div id="detalle-calif"></div>' +
         '<div class="fila" style="margin-top:16px"><button class="btn sec" id="btn-exportar">' + icono('descargar') + 'Descargar CSV para el aula virtual</button><span class="nota" style="margin:0" id="aviso-exportar"></span></div>' +
       '</div>' +
+      (tarea.real ? seccionComparacion(tarea) : '') +
       '<details class="tarjeta"><summary style="cursor:pointer;font-weight:600;color:var(--puce)">Ver la rúbrica usada</summary><div style="margin-top:12px">' + tablaRubrica + '</div></details>';
   }
 
@@ -168,10 +177,12 @@ function vistaTarea(claseId, tareaId) {
     enlazar(raiz) {
       if (!tarea.calificada) {
         const btn = raiz.querySelector('#calificar');
-        if (btn) btn.addEventListener('click', () => calificarLote(tarea, btn));
+        if (btn) btn.addEventListener('click', () => tarea.real ? calificarLoteReal(tarea, btn) : calificarLote(tarea, btn));
+        if (tarea.calificando) pintarProgresoReal(tarea);
         return;
       }
       pintarResultados(tarea);
+      if (tarea.real) enlazarResultadosReal(raiz, tarea);
       raiz.querySelector('#btn-exportar').addEventListener('click', () => exportarCSV(tarea));
       if (detalleAbierto) { verDetalle(tarea, detalleAbierto); detalleAbierto = null; }
     }
@@ -199,22 +210,40 @@ function pintarResultados(tarea) {
   const trabajos = tarea.trabajos;
   const total = fmt(tarea.rubrica.criterios.reduce((s, c) => s + c.max, 0));
   const filas = document.getElementById('filas-calif');
+  if (!filas) return;
   filas.innerHTML = '';
-  ordenarParaRevision(trabajos).forEach(t => {
+  const marcar = t => t.confianza === 'Baja' || t.revisar;
+  // En modo real: primero los que fallaron, luego los marcados para revisar.
+  const orden = tarea.real
+    ? trabajos.slice().sort((a, b) => ((a.estadoIA === 'listo' ? 2 : 0) - (marcar(a) ? 1 : 0)) - ((b.estadoIA === 'listo' ? 2 : 0) - (marcar(b) ? 1 : 0)))
+    : ordenarParaRevision(trabajos);
+  orden.forEach(t => {
     const tr = document.createElement('tr');
+    if (tarea.real && t.estadoIA !== 'listo') {
+      tr.innerHTML = '<td><b>' + esc(t.id) + '</b></td><td colspan="3">' +
+        (t.estadoIA === 'calificando' ? '<span class="estado activo">Calificando…</span>' : '<span class="estado mal">Error</span> ' + esc(t.error || 'Sin calificar.')) + '</td>' +
+        '<td><button class="btn chico sec" data-reintentar="' + esc(t.id) + '"' + (t.estadoIA === 'calificando' ? ' disabled' : '') + '>Reintentar</button></td>';
+      filas.appendChild(tr);
+      return;
+    }
     const claseConf = t.confianza === 'Alta' ? 'e-ok' : t.confianza === 'Media' ? 'e-aviso' : 'e-mal';
     const claseEst = t.estado === 'Aprobada' ? 'e-ok' : t.estado === 'Editada' ? 'e-aviso' : 'e-neutro';
-    tr.innerHTML = '<td><b>' + t.id + '</b></td><td><b>' + fmt(suma(t.final)) + '</b> / ' + total + '</td>' +
-      '<td><span class="etiqueta ' + claseConf + '">' + t.confianza + (t.confianza === 'Baja' ? ' · revisar primero' : '') + '</span></td>' +
+    tr.innerHTML = '<td><b>' + esc(t.id) + '</b></td><td><b>' + fmt(suma(t.final)) + '</b> / ' + total + '</td>' +
+      '<td><span class="etiqueta ' + claseConf + '">' + t.confianza + (marcar(t) ? ' · revisar primero' : '') + '</span></td>' +
       '<td><span class="etiqueta ' + claseEst + '">' + (t.estado === 'Aprobada' ? icono('check') : '') + t.estado + '</span></td>' +
-      '<td><button class="btn chico sec" data-id="' + t.id + '">Revisar</button></td>';
+      '<td><button class="btn chico sec" data-id="' + esc(t.id) + '">Revisar</button></td>';
     filas.appendChild(tr);
   });
-  filas.querySelectorAll('button').forEach(b => b.addEventListener('click', () => verDetalle(tarea, b.dataset.id)));
+  filas.querySelectorAll('[data-id]').forEach(b => b.addEventListener('click', () => verDetalle(tarea, b.dataset.id)));
+  filas.querySelectorAll('[data-reintentar]').forEach(b => b.addEventListener('click', () => {
+    b.disabled = true;
+    reintentarTrabajo(tarea, trabajos.find(t => t.id === b.dataset.reintentar));
+  }));
+  const calificados = trabajos.filter(t => !tarea.real || t.estadoIA === 'listo');
   const aprobadas = trabajos.filter(t => t.estado === 'Aprobada').length;
-  const porRevisar = trabajos.filter(t => t.confianza === 'Baja' && t.estado !== 'Aprobada').length;
+  const porRevisar = calificados.filter(t => marcar(t) && t.estado !== 'Aprobada').length;
   document.getElementById('metricas-calif').innerHTML =
-    metrica('tarea', 'f-azul', trabajos.length, 'Trabajos calificados') +
+    metrica('tarea', 'f-azul', calificados.length + (calificados.length < trabajos.length ? ' de ' + trabajos.length : ''), 'Trabajos calificados') +
     metrica('alerta', 'f-coral', porRevisar, 'Por revisar primero') +
     metrica('check', 'f-verde', aprobadas + ' de ' + trabajos.length, 'Aprobados por ti');
   document.getElementById('btn-exportar').disabled = aprobadas === 0;
@@ -225,7 +254,7 @@ function pintarResultados(tarea) {
 
 function textoRegistro(t) {
   if (!t.aprobacion) return 'Registro para reclamos: todavía sin aprobar. Al aprobar se guarda la rúbrica usada, la justificación por criterio, quién aprobó la nota y cuándo.';
-  return 'Registro para reclamos (simulado, se pierde al recargar la página): rúbrica «' + t.aprobacion.rubrica + '», nota ' + fmt(t.aprobacion.nota) +
+  return 'Registro para reclamos (' + (t.modelo ? 'en memoria de esta pestaña, sugerencia de ' + t.modelo : 'simulado') + '; se pierde al recargar la página): rúbrica «' + t.aprobacion.rubrica + '», nota ' + fmt(t.aprobacion.nota) +
     ', aprobada por ' + t.aprobacion.por + ' el ' + fechaISO(t.aprobacion.fecha) + '.';
 }
 
@@ -233,13 +262,27 @@ function verDetalle(tarea, id) {
   const t = tarea.trabajos.find(x => x.id === id);
   const criterios = tarea.rubrica.criterios;
   const cont = document.getElementById('detalle-calif');
-  let html = '<div class="detalle"><div class="fila"><h2 style="margin:0;font-size:17px;color:var(--puce)">' + t.id + '</h2><span class="espacio"></span><button class="btn fantasma chico" id="btn-cerrar">Cerrar</button></div>' +
-    '<div class="nota" style="margin:10px 0 0">Fragmento del trabajo que sustenta la sugerencia:</div><div class="cita">“' + t.cita + '”</div>' +
-    '<div class="tabla-envoltura"><table><thead><tr><th>Criterio</th><th>Puntos</th><th>Justificación de la sugerencia</th></tr></thead><tbody>';
+  const real = !!t.modelo;
+  const ESTADO_CITA = { verificada: 'cita verificada en el texto', no_verificada: 'cita NO verificada', no_verificable: 'cita de PDF: compárala con el documento' };
+  let html = '<div class="detalle"><div class="fila"><h2 style="margin:0;font-size:17px;color:var(--puce)">' + esc(t.id) + '</h2>' +
+    (real ? '<span class="etiqueta e-ok">IA real · ' + esc(t.modelo) + '</span>' : '') + '<span class="espacio"></span><button class="btn fantasma chico" id="btn-cerrar">Cerrar</button></div>';
+  if (real && t.advertencias && t.advertencias.length) {
+    html += '<div class="advertencias">' + icono('alerta') + '<div><b>Revisa esto primero</b><ul>' + t.advertencias.map(a => '<li>' + esc(a) + '</li>').join('') + '</ul></div></div>';
+  }
+  if (real && t.comentarioGeneral) html += '<p class="comentario"><b>Comentario general de la IA:</b> ' + esc(t.comentarioGeneral) + '</p>';
+  if (!real || t.cita) html += '<div class="nota" style="margin:10px 0 0">Fragmento del trabajo que sustenta la sugerencia:</div><div class="cita">“' + esc(t.cita) + '”</div>';
+  html += '<div class="tabla-envoltura"><table><thead><tr><th>Criterio</th><th>Puntos</th>' + (real ? '<th>Tu nota a mano<br><span class="ayuda">para comparar</span></th>' : '') + '<th>Justificación de la sugerencia</th></tr></thead><tbody>';
   criterios.forEach((c, i) => {
-    html += '<tr><td><b>' + esc(c.nombre) + '</b></td><td style="white-space:nowrap"><input class="num" type="number" step="0.5" min="0" max="' + c.max + '" value="' + t.final[i] + '" data-i="' + i + '"> / ' + fmt(c.max) + '</td><td>' + t.just[i] + '</td></tr>';
+    const citaCriterio = real && t.citas && t.citas[i]
+      ? '<div class="cita-criterio' + (t.estadoCitas[i] === 'no_verificada' ? ' mal' : '') + '">“' + esc(t.citas[i]) + '” <span>(' + ESTADO_CITA[t.estadoCitas[i]] + ')</span></div>' : '';
+    html += '<tr><td><b>' + esc(c.nombre) + '</b>' + (real ? '<div class="ayuda">IA sugirió ' + fmt(t.puntos[i]) + ' · confianza ' + esc((t.confianzas || [])[i] || '') + '</div>' : '') + '</td>' +
+      '<td style="white-space:nowrap"><input class="num" type="number" step="0.5" min="0" max="' + c.max + '" value="' + t.final[i] + '" data-i="' + i + '" aria-label="Nota final de ' + esc(c.nombre) + '"> / ' + fmt(c.max) + '</td>' +
+      (real ? '<td><input class="docente" type="text" inputmode="decimal" value="' + esc(t.notasDocente[i]) + '" data-d="' + i + '" placeholder="—" aria-label="Tu nota a mano en ' + esc(c.nombre) + '"></td>' : '') +
+      '<td>' + esc(t.just[i]) + citaCriterio + '</td></tr>';
   });
-  html += '</tbody></table></div><div class="fila" style="margin-top:14px"><b style="font-size:16px">Nota final: <span id="nota-final">' + fmt(suma(t.final)) + '</span></b><span class="espacio"></span>' +
+  html += '</tbody></table></div>' +
+    (real && t.archivoRef && t.archivoRef.texto != null ? '<details class="texto-trabajo"><summary>Ver el texto del trabajo</summary><pre>' + esc(t.archivoRef.texto) + '</pre></details>' : '') +
+    '<div class="fila" style="margin-top:14px"><b style="font-size:16px">Nota final: <span id="nota-final">' + fmt(suma(t.final)) + '</span></b><span class="espacio"></span>' +
     '<button class="btn exito" id="btn-aprobar">' + icono('check') + (t.estado === 'Aprobada' ? 'Aprobada' : 'Aprobar nota') + '</button></div>' +
     '<div class="registro" id="registro"></div></div>';
   cont.innerHTML = html;
@@ -263,9 +306,14 @@ function verDetalle(tarea, id) {
     // Al salir del campo, mostrar el valor que realmente quedó guardado (p. ej. 5 en un criterio de 4 queda en 4).
     inp.addEventListener('change', () => { inp.value = t.final[i]; });
   });
+  // Notas que el docente puso a mano: solo alimentan la comparación, no la nota final.
+  cont.querySelectorAll('input.docente').forEach(inp => inp.addEventListener('input', () => {
+    t.notasDocente[Number(inp.dataset.d)] = inp.value;
+    pintarComparacion(tarea);
+  }));
   document.getElementById('btn-aprobar').addEventListener('click', () => {
     aprobar(t, APP.usuario.nombre, tarea.rubrica.nombre, new Date());
-    toast('Nota de ' + t.id + ' aprobada');
+    toast('Nota de ' + t.id + ' aprobada'); // toast usa textContent: no hace falta escapar
     detalleAbierto = t.id; // se queda abierto para que veas el registro
     render();
   });

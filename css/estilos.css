@@ -338,3 +338,45 @@ tbody tr:hover { background: #FAFBFE; }
   .chat-tarjeta { order: -1; }
   .chat { height: 380px; }
 }
+
+/* ---------- Modo IA real (Fase B mínima; el rediseño viene después) ---------- */
+.banner.real { background: #0B3A6E; color: #fff; }
+.info-real { display: flex; gap: 10px; align-items: flex-start; background: var(--puce-claro); border: 1px solid #C9D8EC; color: #23364F; border-radius: 12px; padding: 10px 14px; font-size: 13.5px; margin-bottom: 16px; }
+.ventana-fondo { position: fixed; inset: 0; background: rgba(15, 25, 40, .45); display: grid; place-items: center; padding: 16px; z-index: 50; }
+.ventana { background: var(--superficie); border-radius: 12px; padding: 20px 22px; width: min(560px, 100%); max-height: calc(100vh - 32px); overflow: auto; box-shadow: 0 10px 40px rgba(0, 0, 0, .25); }
+.ventana h2 { font-size: 18px; color: var(--puce); margin: 0 0 10px; }
+.ventana p { margin: 0 0 10px; font-size: 14.5px; }
+.ventana textarea { width: 100%; font: inherit; }
+.casilla { display: flex; gap: 8px; align-items: flex-start; font-weight: 600; margin: 12px 0 4px; cursor: pointer; }
+.casilla input { margin-top: 4px; }
+.error-casilla { color: var(--rojo); font-size: 13.5px; }
+.estado { font-size: 13px; color: var(--suave); white-space: nowrap; }
+.estado::before { content: ""; display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: #A9B4C4; margin-right: 6px; vertical-align: 1px; }
+.estado.activo::before { background: var(--puce-2); }
+.estado.ok::before { background: var(--verde); }
+.estado.mal { color: var(--rojo); font-weight: 600; }
+.estado.mal::before { background: var(--rojo); }
+.error-linea { display: block; flex-basis: 100%; color: var(--rojo); font-size: 13px; padding-left: 4px; }
+.archivo { flex-wrap: wrap; }
+.advertencias { display: flex; gap: 10px; background: var(--ambar-f); color: #6B4500; border-radius: 10px; padding: 10px 14px; margin: 12px 0; font-size: 14px; }
+.advertencias ul { margin: 4px 0 0; padding-left: 18px; }
+.comentario { font-size: 14px; margin: 10px 0; }
+.cita-criterio { margin-top: 6px; font-size: 13px; font-style: italic; color: #3A4A60; border-left: 3px solid var(--puce-2); padding-left: 8px; }
+.cita-criterio.mal { border-left-color: var(--rojo); }
+.cita-criterio span { font-style: normal; color: var(--suave); }
+.cita-criterio.mal span { color: var(--rojo); font-weight: 600; }
+td .ayuda, th .ayuda { display: block; font-size: 12px; font-weight: 400; color: var(--suave); }
+input.docente { width: 70px; padding: 6px 8px; border: 1px solid var(--borde); border-radius: 8px; font: inherit; font-variant-numeric: tabular-nums; }
+.texto-trabajo { margin-top: 12px; }
+.texto-trabajo summary { cursor: pointer; font-weight: 600; color: var(--puce); }
+.texto-trabajo pre { white-space: pre-wrap; font-family: inherit; font-size: 14px; background: var(--superficie); border: 1px solid var(--borde); border-radius: 10px; padding: 12px 14px; max-height: 360px; overflow: auto; }
+.tarjeta h3 { font-size: 15px; color: var(--texto); margin: 18px 0 8px; }
+.comp-cifra { display: flex; gap: 14px; align-items: baseline; flex-wrap: wrap; margin: 6px 0 10px; }
+.comp-cifra b { font-size: 40px; line-height: 1; color: var(--puce); font-variant-numeric: tabular-nums; }
+.comp-cifra span { color: var(--suave); max-width: 520px; }
+th.n, td.n { text-align: right; font-variant-numeric: tabular-nums; }
+.diferencias { padding-left: 18px; margin: 0; }
+.diferencias li { margin-bottom: 8px; }
+.diferencias li span { display: block; color: var(--suave); font-size: 13.5px; }
+.tiempos { padding-left: 18px; margin: 4px 0 0; }
+.vacio-linea { color: var(--suave); background: #F3F5F9; border-radius: 10px; padding: 12px 14px; }
