@@ -195,7 +195,7 @@ function seccionActividad(clase) {
       '</div>' +
       '<div class="tarjeta"><h2>' + icono('grafico') + 'Dónde se atasca el curso <span class="etiqueta e-sim">datos de ejemplo</span></h2>' +
         '<p class="nota">8 estudiantes ficticios. Cada barra cuenta en qué paso se atascó cada uno: así sabes qué reforzar en la próxima clase.</p>' + barras +
-        '<div class="tabla-envoltura" style="margin-top:16px"><table><thead><tr><th>Estudiante</th><th>Pistas usadas</th><th>Intentos de respuesta directa</th><th>Se atascó en</th></tr></thead><tbody>' +
+        '<div class="tabla-envoltura" style="margin-top:16px"><table class="apilable"><thead><tr><th>Estudiante</th><th>Pistas usadas</th><th>Intentos de respuesta directa</th><th>Se atascó en</th></tr></thead><tbody>' +
         curso.map(x => '<tr><td>' + x.nombre + '</td><td>' + x.pistas + '</td><td>' + (x.intentos ? '<span class="etiqueta e-mal">' + x.intentos + '</span>' : '0') + '</td><td>' +
           (x.atasco ? '<span class="etiqueta e-aviso">Paso ' + x.atasco + '</span>' : '<span class="etiqueta e-ok">Sin atascos</span>') + '</td></tr>').join('') +
         '</tbody></table></div>' +

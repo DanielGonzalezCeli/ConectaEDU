@@ -380,3 +380,58 @@ th.n, td.n { text-align: right; font-variant-numeric: tabular-nums; }
 .diferencias li span { display: block; color: var(--suave); font-size: 13.5px; }
 .tiempos { padding-left: 18px; margin: 4px 0 0; }
 .vacio-linea { color: var(--suave); background: #F3F5F9; border-radius: 10px; padding: 12px 14px; }
+
+/* ---------- Celular (hasta 600 px) ---------- */
+.solo-movil { display: none; }
+@media (max-width: 600px) {
+  .banner { font-size: 12.5px; padding: 7px 12px; line-height: 1.4; }
+  .solo-ancho { display: none; }
+  .solo-movil { display: inline; }
+  /* Quien entra desde el QR ve primero el formulario; la presentación queda debajo. */
+  .ingreso .formulario { order: -1; }
+  .ingreso .hero { padding: 28px 20px; }
+  .contenido { padding: 16px 12px 40px; }
+  .tarjeta { padding: 16px 14px; }
+
+  /* Tablas como fichas apiladas: una ficha por fila, con el nombre de cada dato. */
+  .tabla-envoltura:has(> table.apilable) { overflow: visible; }
+  table.apilable thead { display: none; }
+  table.apilable, table.apilable tbody, table.apilable tr, table.apilable td { display: block; width: 100%; }
+  table.apilable tr { border: 1px solid var(--borde); border-radius: 10px; padding: 8px 12px; margin-bottom: 10px; background: var(--superficie); }
+  table.apilable tbody tr:hover { background: var(--superficie); }
+  /* El contenido va a la derecha y junto (p. ej. «7,5 / 10»); el nombre del dato flota a la izquierda. */
+  table.apilable td { border: 0; padding: 5px 0; text-align: right; overflow: hidden; }
+  table.apilable td::before { content: attr(data-et); float: left; margin-right: 12px; font-size: 13px; font-weight: 600; color: var(--suave); text-align: left; max-width: 55%; }
+  table.revision td::before { line-height: 40px; }
+  table.apilable td:first-child { display: block; text-align: left; font-size: 15px; padding-top: 2px; }
+  table.apilable td:first-child::before, table.apilable td[data-et=""]::before { display: none; }
+  table.apilable td[data-et=""] { display: block; text-align: left; }
+  table.apilable td[data-et=""] .btn { width: 100%; justify-content: center; }
+  table.apilable td.bloque { display: block; text-align: left; }
+  table.apilable td.bloque::before { float: none; display: block; margin-bottom: 2px; max-width: none; line-height: inherit; }
+
+  /* Tamaños cómodos para el dedo; 16 px en campos evita el zoom automático del iPhone. */
+  input, select, textarea { font-size: 16px; }
+  input.num, input.docente { width: 84px; min-height: 40px; }
+  .btn.chico { min-height: 36px; }
+  .quitar { min-width: 40px; min-height: 40px; }
+  .atajos button { min-height: 36px; }
+
+  .toasts { left: 12px; right: 12px; bottom: 12px; }
+  .toast { max-width: none; }
+  .toasts .toast:nth-last-child(n+3) { display: none; }
+  .ventana { padding: 16px; }
+  .ventana .fila.fin .btn { flex: 1 1 auto; justify-content: center; }
+  .comp-cifra b { font-size: 34px; }
+}
+
+/* ---------- Pantallas táctiles (celulares y tabletas) ---------- */
+@media (pointer: coarse) {
+  .btn.chico { min-height: 36px; }
+  .quitar { min-width: 40px; min-height: 40px; }
+  .atajos button { min-height: 36px; }
+  input, select, textarea { font-size: 16px; }
+}
+@media (max-width: 900px) {
+  .archivo .tipo, .lateral nav a .cuenta { font-size: 12px; }
+}

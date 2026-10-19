@@ -112,6 +112,23 @@ function pasosAsistente(nombres, actual) {
     '<div class="' + (i < actual ? 'hecho' : i === actual ? 'actual' : '') + '"><span>' + n + '</span></div>').join('') + '</div>';
 }
 
+// En celular, las tablas con clase "apilable" se muestran como fichas. Cada celda
+// necesita el nombre de su columna (data-et) para mostrarlo dentro de la ficha.
+function etiquetarTablas(raiz) {
+  raiz.querySelectorAll('table.apilable').forEach(tabla => {
+    const titulos = [...tabla.querySelectorAll('thead th')].map(th => (th.childNodes[0] ? th.childNodes[0].textContent : '').trim());
+    tabla.querySelectorAll('tbody tr').forEach(tr => {
+      let col = 0;
+      [...tr.children].forEach(td => {
+        if (!td.hasAttribute('data-et')) td.setAttribute('data-et', titulos[col] || '');
+        col += td.colSpan || 1;
+      });
+    });
+  });
+}
+// Las tablas también se repintan sin pasar por render() (resultados, comparación).
+new MutationObserver(() => etiquetarTablas(document)).observe(document.documentElement, { childList: true, subtree: true });
+
 // Zona para arrastrar archivos. Solo se usan el nombre y el tamaño: el contenido nunca se lee.
 function enlazarZonaSubida(zona, input, alRecibir) {
   zona.addEventListener('click', () => input.click());

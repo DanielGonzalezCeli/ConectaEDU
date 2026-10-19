@@ -29,9 +29,10 @@ function pintarBanner() {
   if (!b || !modoReal()) return;
   const s = IA.sesion;
   b.className = 'banner real';
-  b.innerHTML = '<b>IA REAL</b> · modelo ' + esc(IA.modelo) + ' · llamadas usadas en la última hora: ' + IA.llamadasUsadas + ' de ' + IA.limite +
-    (s && s.llamadas ? ' · tokens del servidor: ' + s.tokensEntrada.toLocaleString('es') + ' de entrada y ' + s.tokensSalida.toLocaleString('es') + ' de salida' : '') +
-    '. Las notas son <b>sugerencias</b>: el docente revisa y aprueba cada una. El tutor, las cuentas y las clases de ejemplo siguen simulados.';
+  // Las partes "solo-ancho" se ocultan en celular para que el aviso no ocupe media pantalla.
+  b.innerHTML = '<b>IA REAL</b> · <span class="solo-ancho">modelo </span>' + esc(IA.modelo) + ' · <span class="solo-ancho">llamadas usadas en la última hora: </span>' + IA.llamadasUsadas + ' de ' + IA.limite + '<span class="solo-movil"> llamadas por hora</span>' +
+    (s && s.llamadas ? '<span class="solo-ancho"> · tokens del servidor: ' + s.tokensEntrada.toLocaleString('es') + ' de entrada y ' + s.tokensSalida.toLocaleString('es') + ' de salida</span>' : '') +
+    '. Las notas son <b>sugerencias</b><span class="solo-ancho">: el docente revisa y aprueba cada una</span>. El tutor<span class="solo-ancho">, las cuentas</span> y las clases de ejemplo siguen simulados.';
 }
 
 /* ---------- Ventana modal sencilla ---------- */

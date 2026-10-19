@@ -191,10 +191,10 @@ function pintarComparacion(tarea) {
     '<div class="comp-cifra"><b>' + num(r.porcentaje, 1) + ' %</b><span>de coincidencia por criterio (diferencia de ' + num(r.tolerancia) + ' puntos o menos), ' +
       'con ' + plural(r.trabajos, 'trabajo', 'trabajos') + ' y ' + plural(r.criterios, 'criterio', 'criterios') + ' comparados (' + r.coincidencias + ' coinciden).</span></div>' +
     '<p>Diferencia promedio por criterio: <b>' + num(r.difPromedio) + ' puntos</b>. ' + sesgo + '</p>' +
-    '<div class="tabla-envoltura"><table><thead><tr><th>Criterio</th><th class="n">Comparados</th><th class="n">Coinciden</th><th class="n">Diferencia promedio</th><th class="n">IA − tú (promedio)</th></tr></thead><tbody>' +
+    '<div class="tabla-envoltura"><table class="apilable"><thead><tr><th>Criterio</th><th class="n">Comparados</th><th class="n">Coinciden</th><th class="n">Diferencia promedio</th><th class="n">IA − tú (promedio)</th></tr></thead><tbody>' +
       r.porCriterio.map(c => '<tr><td>' + esc(c.nombre) + '</td><td class="n">' + c.pares + '</td><td class="n">' + (c.pares ? c.coincidencias + ' (' + num(c.porcentaje, 1) + ' %)' : '—') + '</td><td class="n">' + num(c.difPromedio) + '</td><td class="n">' + (c.pares ? conSigno(c.sesgo) : '—') + '</td></tr>').join('') +
     '</tbody></table></div>' +
-    '<div class="tabla-envoltura"><table><thead><tr><th>Trabajo</th><th class="n">Nota IA</th><th class="n">Tu nota</th><th class="n">Diferencia</th></tr></thead><tbody>' +
+    '<div class="tabla-envoltura"><table class="apilable"><thead><tr><th>Trabajo</th><th class="n">Nota IA</th><th class="n">Tu nota</th><th class="n">Diferencia</th></tr></thead><tbody>' +
       r.porTrabajo.map(t => '<tr><td>' + esc(t.id) + '</td><td class="n">' + num(t.notaIA) + '</td><td class="n">' + (t.completo ? num(t.notaDocente) : 'faltan notas') + '</td><td class="n">' + (t.completo ? conSigno(t.diferencia) : '—') + '</td></tr>').join('') +
     '</tbody></table></div>' +
     (r.mayoresDiferencias.length

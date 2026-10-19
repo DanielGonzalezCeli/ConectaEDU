@@ -12,7 +12,7 @@ function estadoTarea(t) {
 function seccionTareas(clase) {
   const nueva = '<a class="btn" href="#/docente/clase/' + clase.id + '/tareas/nueva">' + icono('mas') + 'Nueva tarea</a>';
   const cuerpo = clase.tareas.length
-    ? '<div class="tabla-envoltura"><table><thead><tr><th>Tarea</th><th>Entrega</th><th>Trabajos</th><th>Estado</th><th></th></tr></thead><tbody>' +
+    ? '<div class="tabla-envoltura"><table class="apilable"><thead><tr><th>Tarea</th><th>Entrega</th><th>Trabajos</th><th>Estado</th><th></th></tr></thead><tbody>' +
       clase.tareas.map(t => '<tr><td><b>' + esc(t.nombre) + '</b>' + (t.archivos.some(a => a.ejemplo) ? ' <span class="etiqueta e-sim">ejemplo</span>' : '') + (t.real ? ' <span class="etiqueta e-ok">IA real</span>' : '') + '</td><td>' + esc(t.entrega || '—') + '</td><td>' + t.archivos.length + '</td><td>' + estadoTarea(t) + '</td>' +
         '<td><a class="btn chico sec" href="#/docente/clase/' + clase.id + '/tareas/' + t.id + '">Abrir</a></td></tr>').join('') +
       '</tbody></table></div>'
@@ -135,8 +135,8 @@ function vistaTarea(claseId, tareaId) {
   if (!tarea) { ir('/docente/clase/' + claseId + '/tareas'); return null; }
   const criterios = tarea.rubrica.criterios;
   const simulable = rubricaEsEjemplo(tarea.rubrica);
-  const tablaRubrica = '<div class="tabla-envoltura"><table><thead><tr><th>Criterio</th><th>Qué se evalúa</th><th>Puntos</th></tr></thead><tbody>' +
-    criterios.map(c => '<tr><td><b>' + esc(c.nombre) + '</b></td><td>' + esc(c.desc || '') + '</td><td>' + fmt(c.max) + '</td></tr>').join('') + '</tbody></table></div>';
+  const tablaRubrica = '<div class="tabla-envoltura"><table class="apilable"><thead><tr><th>Criterio</th><th>Qué se evalúa</th><th>Puntos</th></tr></thead><tbody>' +
+    criterios.map(c => '<tr><td><b>' + esc(c.nombre) + '</b></td><td class="bloque">' + esc(c.desc || '') + '</td><td>' + fmt(c.max) + '</td></tr>').join('') + '</tbody></table></div>';
   const totalRubrica = fmt(criterios.reduce((s, c) => s + c.max, 0));
 
   let html = '<div class="miga"><a href="#/docente/clase/' + claseId + '/tareas">Tareas</a> / ' + esc(tarea.nombre) + '</div>' +
@@ -163,7 +163,7 @@ function vistaTarea(claseId, tareaId) {
       '<div class="tarjeta"><h2>' + icono('chispa') + 'Notas sugeridas ' +
         (tarea.real ? '<span class="etiqueta e-ok">IA real · ' + esc((tarea.trabajos.find(t => t.modelo) || {}).modelo || IA.modelo || '') + '</span>' : '<span class="etiqueta e-sim">simuladas</span>') + '</h2>' +
         '<p class="nota">Son sugerencias. Puedes cambiar cualquier criterio y tú apruebas la nota final. Los de confianza baja aparecen primero.</p>' +
-        '<div class="tabla-envoltura"><table><thead><tr><th>Estudiante</th><th>Nota sugerida</th><th>Confianza</th><th>Estado</th><th></th></tr></thead><tbody id="filas-calif"></tbody></table></div>' +
+        '<div class="tabla-envoltura"><table class="apilable"><thead><tr><th>Estudiante</th><th>Nota sugerida</th><th>Confianza</th><th>Estado</th><th></th></tr></thead><tbody id="filas-calif"></tbody></table></div>' +
         '<div id="detalle-calif"></div>' +
         '<div class="fila" style="margin-top:16px"><button class="btn sec" id="btn-exportar">' + icono('descargar') + 'Descargar CSV para el aula virtual</button><span class="nota" style="margin:0" id="aviso-exportar"></span></div>' +
       '</div>' +
@@ -220,7 +220,7 @@ function pintarResultados(tarea) {
   orden.forEach(t => {
     const tr = document.createElement('tr');
     if (tarea.real && t.estadoIA !== 'listo') {
-      tr.innerHTML = '<td><b>' + esc(t.id) + '</b></td><td colspan="3">' +
+      tr.innerHTML = '<td><b>' + esc(t.id) + '</b></td><td colspan="3" class="bloque" data-et="">' +
         (t.estadoIA === 'calificando' ? '<span class="estado activo">Calificando…</span>' : '<span class="estado mal">Error</span> ' + esc(t.error || 'Sin calificar.')) + '</td>' +
         '<td><button class="btn chico sec" data-reintentar="' + esc(t.id) + '"' + (t.estadoIA === 'calificando' ? ' disabled' : '') + '>Reintentar</button></td>';
       filas.appendChild(tr);
@@ -271,14 +271,14 @@ function verDetalle(tarea, id) {
   }
   if (real && t.comentarioGeneral) html += '<p class="comentario"><b>Comentario general de la IA:</b> ' + esc(t.comentarioGeneral) + '</p>';
   if (!real || t.cita) html += '<div class="nota" style="margin:10px 0 0">Fragmento del trabajo que sustenta la sugerencia:</div><div class="cita">“' + esc(t.cita) + '”</div>';
-  html += '<div class="tabla-envoltura"><table><thead><tr><th>Criterio</th><th>Puntos</th>' + (real ? '<th>Tu nota a mano<br><span class="ayuda">para comparar</span></th>' : '') + '<th>Justificación de la sugerencia</th></tr></thead><tbody>';
+  html += '<div class="tabla-envoltura"><table class="apilable revision"><thead><tr><th>Criterio</th><th>Puntos</th>' + (real ? '<th>Tu nota a mano<br><span class="ayuda">para comparar</span></th>' : '') + '<th>Justificación de la sugerencia</th></tr></thead><tbody>';
   criterios.forEach((c, i) => {
     const citaCriterio = real && t.citas && t.citas[i]
       ? '<div class="cita-criterio' + (t.estadoCitas[i] === 'no_verificada' ? ' mal' : '') + '">“' + esc(t.citas[i]) + '” <span>(' + ESTADO_CITA[t.estadoCitas[i]] + ')</span></div>' : '';
     html += '<tr><td><b>' + esc(c.nombre) + '</b>' + (real ? '<div class="ayuda">IA sugirió ' + fmt(t.puntos[i]) + ' · confianza ' + esc((t.confianzas || [])[i] || '') + '</div>' : '') + '</td>' +
       '<td style="white-space:nowrap"><input class="num" type="number" step="0.5" min="0" max="' + c.max + '" value="' + t.final[i] + '" data-i="' + i + '" aria-label="Nota final de ' + esc(c.nombre) + '"> / ' + fmt(c.max) + '</td>' +
       (real ? '<td><input class="docente" type="text" inputmode="decimal" value="' + esc(t.notasDocente[i]) + '" data-d="' + i + '" placeholder="—" aria-label="Tu nota a mano en ' + esc(c.nombre) + '"></td>' : '') +
-      '<td>' + esc(t.just[i]) + citaCriterio + '</td></tr>';
+      '<td class="bloque">' + esc(t.just[i]) + citaCriterio + '</td></tr>';
   });
   html += '</tbody></table></div>' +
     (real && t.archivoRef && t.archivoRef.texto != null ? '<details class="texto-trabajo"><summary>Ver el texto del trabajo</summary><pre>' + esc(t.archivoRef.texto) + '</pre></details>' : '') +
