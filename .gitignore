@@ -6,6 +6,7 @@
 # Dependencias y salidas
 node_modules/
 dist/
+resultados/
 
 # Sistema y editor
 .DS_Store
