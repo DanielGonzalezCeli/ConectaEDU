@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ConectaEDU · Calificador de tareas con la rúbrica del docente</title>
+<meta name="description" content="ConectaEDU es un prototipo académico de la PUCE: un calificador de tareas con IA que sugiere una nota por criterio según la rúbrica del docente. El docente revisa, edita y aprueba.">
+<!-- El mismo favicon del repositorio (favicon.svg), incrustado para no depender de rutas fuera de /docs. -->
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%23164e63'/%3E%3Cpath d='M21 41 43 23' fill='none' stroke='%23ffffff' stroke-width='7' stroke-linecap='round'/%3E%3Ccircle cx='21' cy='41' r='10' fill='%2367e8f9'/%3E%3Ccircle cx='43' cy='23' r='10' fill='%23ffffff'/%3E%3C/svg%3E">
+<link rel="stylesheet" href="landing.css">
+</head>
+<body>
+<a class="saltar" href="#contenido">Saltar al contenido</a>
+
+<header class="cabecera azul">
+  <div class="ancho cabecera-fila">
+    <a class="marca" href="index.html">
+      <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%23164e63'/%3E%3Cpath d='M21 41 43 23' fill='none' stroke='%23ffffff' stroke-width='7' stroke-linecap='round'/%3E%3Ccircle cx='21' cy='41' r='10' fill='%2367e8f9'/%3E%3Ccircle cx='43' cy='23' r='10' fill='%23ffffff'/%3E%3C/svg%3E" alt="" width="32" height="32">
+      ConectaEDU
+    </a>
+    <nav aria-label="Secciones">
+      <ul>
+        <li><a href="#problema">Problema</a></li>
+        <li><a href="#como-funciona">Cómo funciona</a></li>
+        <li><a href="#pendiente">Lo que falta</a></li>
+        <li><a href="privacidad.html">Privacidad</a></li>
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<main id="contenido">
+
+  <section class="azul portada" id="inicio" aria-labelledby="titulo-portada">
+    <div class="ancho">
+      <p class="antetitulo">Prototipo académico · PUCE</p>
+      <h1 id="titulo-portada">Tu rúbrica califica.<br>Tú decides la nota.</h1>
+      <p class="bajada">ConectaEDU es un calificador de tareas con IA: sugiere una nota por criterio según la rúbrica del docente, y el docente revisa, edita y aprueba cada nota.</p>
+      <div class="acciones">
+        <div class="accion">
+          <a class="boton principal" href="https://conectaedu-l2j8.onrender.com/" aria-describedby="aviso-acceso">Probar el prototipo</a>
+          <p class="nota-boton" id="aviso-acceso">Acceso con clave, puede tardar hasta un minuto en abrir.</p>
+        </div>
+        <div class="accion">
+          <a class="boton secundario" href="https://github.com/DanielGonzalezCeli/ConectaEDU">Ver el código</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="papel" id="problema" aria-labelledby="titulo-problema">
+    <div class="ancho">
+      <p class="antetitulo">El problema</p>
+      <h2 id="titulo-problema">Calificar se lleva horas, y la IA genérica ya está en uso</h2>
+      <p class="intro">Lo que respondieron 14 docentes en nuestra encuesta:</p>
+      <dl class="cifras">
+        <div class="cifra">
+          <dt>6,5 <span>horas</span></dt>
+          <dd>es la mediana de tiempo que dedicaron a calificar su última evaluación.</dd>
+        </div>
+        <div class="cifra">
+          <dt>11 <span>de 14</span></dt>
+          <dd>ya usaron IA para calificar.</dd>
+        </div>
+      </dl>
+      <p class="advertencia">Muestra pequeña y por conveniencia: no representa a todos los docentes.</p>
+    </div>
+  </section>
+
+  <section class="azul" id="como-funciona" aria-labelledby="titulo-como">
+    <div class="ancho">
+      <p class="antetitulo">Cómo funciona</p>
+      <h2 id="titulo-como">Tres pasos, y la última palabra es del docente</h2>
+      <ol class="pasos">
+        <li>
+          <h3>Carga tu rúbrica y los trabajos</h3>
+          <p>El docente define sus criterios y puntajes, y sube los trabajos de sus estudiantes.</p>
+        </li>
+        <li>
+          <h3>La IA sugiere una nota por criterio</h3>
+          <p>Cada sugerencia trae la cita del documento que la sustenta y su nivel de confianza.</p>
+        </li>
+        <li>
+          <h3>El docente edita o aprueba</h3>
+          <p>Puede cambiar cualquier criterio. Ninguna nota sale sin su aprobación.</p>
+        </li>
+      </ol>
+    </div>
+  </section>
+
+  <section class="papel" id="pendiente" aria-labelledby="titulo-pendiente">
+    <div class="ancho">
+      <p class="antetitulo">Lo que falta probar</p>
+      <h2 id="titulo-pendiente">Todavía no lo sabemos</h2>
+      <ul class="pendientes">
+        <li>Cuánto tiempo ahorra de verdad a un docente.</li>
+        <li>Qué tanto coincide la nota sugerida con la del docente en tareas reales.</li>
+        <li>Pruebas con docentes fuera del equipo.</li>
+        <li>Un tutor que responda con el material de la materia: hoy es una demostración simulada.</li>
+      </ul>
+    </div>
+  </section>
+
+  <section class="azul" id="equipo" aria-labelledby="titulo-equipo">
+    <div class="ancho">
+      <p class="antetitulo">Equipo</p>
+      <h2 id="titulo-equipo">Estudiantes de Ingeniería de Sistemas</h2>
+      <p class="intro">Prototipo académico de la materia Emprendimiento Tecnológico (NRC 2667), PUCE.</p>
+      <ul class="equipo">
+        <li>Daniel González</li>
+        <li>Dilan Mena</li>
+        <li>Samantha Nuñez</li>
+        <li>Juan Hoyos</li>
+      </ul>
+    </div>
+  </section>
+
+</main>
+
+<footer class="pie">
+  <div class="ancho pie-fila">
+    <p>Proyecto académico · PUCE · Emprendimiento Tecnológico</p>
+    <ul class="pie-enlaces">
+      <li><a href="privacidad.html">Política de privacidad</a></li>
+      <li><a href="https://github.com/DanielGonzalezCeli/ConectaEDU">Repositorio en GitHub</a></li>
+      <li>Código bajo licencia MIT</li>
+    </ul>
+  </div>
+</footer>
+</body>
+</html>

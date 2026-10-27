@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Política de privacidad · ConectaEDU</title>
+<meta name="description" content="Qué datos usa el prototipo de ConectaEDU, a quién se envían, qué se guarda y por cuánto tiempo.">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%23164e63'/%3E%3Cpath d='M21 41 43 23' fill='none' stroke='%23ffffff' stroke-width='7' stroke-linecap='round'/%3E%3Ccircle cx='21' cy='41' r='10' fill='%2367e8f9'/%3E%3Ccircle cx='43' cy='23' r='10' fill='%23ffffff'/%3E%3C/svg%3E">
+<link rel="stylesheet" href="landing.css">
+</head>
+<body>
+<a class="saltar" href="#contenido">Saltar al contenido</a>
+
+<header class="cabecera azul">
+  <div class="ancho cabecera-fila">
+    <a class="marca" href="index.html">
+      <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%23164e63'/%3E%3Cpath d='M21 41 43 23' fill='none' stroke='%23ffffff' stroke-width='7' stroke-linecap='round'/%3E%3Ccircle cx='21' cy='41' r='10' fill='%2367e8f9'/%3E%3Ccircle cx='43' cy='23' r='10' fill='%23ffffff'/%3E%3C/svg%3E" alt="" width="32" height="32">
+      ConectaEDU
+    </a>
+    <nav aria-label="Secciones">
+      <ul>
+        <li><a href="index.html">Inicio</a></li>
+        <li><a href="privacidad.html" aria-current="page">Privacidad</a></li>
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<main id="contenido" class="documento papel">
+  <article class="ancho">
+    <p class="antetitulo">Prototipo académico · PUCE</p>
+    <h1>Política de privacidad</h1>
+    <p class="fecha">Última actualización: 26 de octubre de 2026.</p>
+    <p>Esta página explica cómo trata los datos el prototipo de ConectaEDU publicado en <a href="https://conectaedu-l2j8.onrender.com/">conectaedu-l2j8.onrender.com</a>. Describe solo lo que hace hoy el código del <a href="https://github.com/DanielGonzalezCeli/ConectaEDU">repositorio</a>. Es un prototipo de un proyecto universitario, no un servicio comercial.</p>
+
+    <section class="resumen" aria-labelledby="titulo-resumen">
+      <h2 id="titulo-resumen">En pocas palabras</h2>
+      <ul>
+        <li>Para sugerir una nota, la rúbrica y el trabajo se envían a Anthropic, el proveedor de IA.</li>
+        <li>El servidor de ConectaEDU no guarda trabajos ni rúbricas. Solo anota datos de uso: fecha, modelo, cantidad de texto procesado, tiempo y costo.</li>
+        <li>Las notas sugeridas y aprobadas viven solo en tu navegador y se pierden al recargar la página.</li>
+        <li>No hay cuentas de usuario: se entra con una clave de acceso compartida.</li>
+      </ul>
+    </section>
+
+    <section aria-labelledby="titulo-entran">
+      <h2 id="titulo-entran">Qué datos entran</h2>
+      <p>Cuando el docente califica con IA, se envía:</p>
+      <ul>
+        <li><strong>La rúbrica:</strong> el nombre de cada criterio, su descripción y su puntaje máximo.</li>
+        <li><strong>Las instrucciones de la tarea</strong>, si el docente las escribió.</li>
+        <li><strong>El trabajo:</strong> el texto pegado o el contenido del archivo (.txt, .md o PDF de hasta 5 MB).</li>
+      </ul>
+      <p><strong>No se envía el nombre del archivo.</strong> Cada trabajo se identifica en la página como «Trabajo 1», «Trabajo 2», y ese nombre tampoco sale del navegador.</p>
+      <p>Para entrar, se escribe la clave de acceso. El servidor no guarda esa clave escrita: entrega al navegador una cookie con una firma que vale 12 horas.</p>
+      <p>Para limitar el gasto y los intentos de adivinar la clave, el servidor cuenta las solicitudes por <strong>dirección IP</strong>.</p>
+    </section>
+
+    <section aria-labelledby="titulo-proveedor">
+      <h2 id="titulo-proveedor">A quién se envían</h2>
+      <ul>
+        <li><strong>Anthropic</strong>, mediante su API, recibe la rúbrica, las instrucciones y el trabajo para generar la nota sugerida. El modelo configurado por defecto es Claude Sonnet 5.5.</li>
+        <li><strong>Render</strong> aloja el servidor del prototipo, en su plan gratuito. Los datos pasan por ese servidor para llegar a Anthropic.</li>
+      </ul>
+      <p>Qué hacen Anthropic y Render con los datos que reciben, cuánto tiempo los conservan y si los usan para entrenar modelos depende de sus propias condiciones. <span class="pendiente-etiqueta">Pendiente:</span> todavía no hemos revisado ni documentado esas condiciones, así que no prometemos nada sobre ellas.</p>
+    </section>
+
+    <section aria-labelledby="titulo-guarda">
+      <h2 id="titulo-guarda">Qué se guarda y por cuánto tiempo</h2>
+      <table class="tabla">
+        <thead>
+          <tr><th scope="col">Dato</th><th scope="col">Dónde</th><th scope="col">Por cuánto tiempo</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td data-titulo="Dato">Trabajos, rúbricas e instrucciones</td>
+            <td data-titulo="Dónde">En la memoria del servidor, solo mientras se procesa la solicitud.</td>
+            <td data-titulo="Por cuánto tiempo">No se escriben en ningún archivo ni base de datos.</td>
+          </tr>
+          <tr>
+            <td data-titulo="Dato">Notas sugeridas, ediciones y aprobaciones del docente</td>
+            <td data-titulo="Dónde">En la memoria de la pestaña del navegador. No se usa el almacenamiento local del navegador.</td>
+            <td data-titulo="Por cuánto tiempo">Hasta recargar o cerrar la pestaña. El docente puede descargarlas en CSV o JSON.</td>
+          </tr>
+          <tr>
+            <td data-titulo="Dato">Registro de uso: fecha, ruta, modelo, tokens (cantidad de texto procesado), tiempo, resultado de la llamada y costo</td>
+            <td data-titulo="Dónde">En un archivo del servidor (<code>resultados/uso.csv</code>).</td>
+            <td data-titulo="Por cuánto tiempo">En Render, el disco es temporal: el archivo se borra cada vez que el servicio se reinicia o se apaga por inactividad.</td>
+          </tr>
+          <tr>
+            <td data-titulo="Dato">Dirección IP</td>
+            <td data-titulo="Dónde">En la memoria del servidor, para los límites de uso.</td>
+            <td data-titulo="Por cuánto tiempo">Cuenta las solicitudes de la última hora y los intentos fallidos de los últimos 15 minutos. No se escribe en ningún archivo y se pierde al reiniciar el servidor.</td>
+          </tr>
+          <tr>
+            <td data-titulo="Dato">Cookie de acceso</td>
+            <td data-titulo="Dónde">En tu navegador.</td>
+            <td data-titulo="Por cuánto tiempo">12 horas. Contiene una firma de la clave de acceso, no datos personales.</td>
+          </tr>
+        </tbody>
+      </table>
+      <p>Si ocurre un error interno, el servidor anota solo el tipo de error, sin el contenido del trabajo.</p>
+    </section>
+
+    <section aria-labelledby="titulo-no-guarda">
+      <h2 id="titulo-no-guarda">Qué no se guarda</h2>
+      <ul>
+        <li>El contenido de los trabajos, las rúbricas y las instrucciones.</li>
+        <li>Los nombres de los archivos.</li>
+        <li>Cuentas, nombres o correos de usuarios: no existen. El «Iniciar sesión» como docente o estudiante dentro de la página es parte de la demostración y no verifica a nadie.</li>
+        <li>Las conversaciones con el tutor: en esta versión el tutor es una demostración simulada y sus mensajes no salen del navegador.</li>
+        <li>El material que se arrastra en «Material del tutor»: no se lee ni se envía; solo se muestra su nombre en la pantalla.</li>
+      </ul>
+    </section>
+
+    <section aria-labelledby="titulo-acceso">
+      <h2 id="titulo-acceso">Quién tiene acceso</h2>
+      <ul>
+        <li><strong>Quien tiene la clave de acceso</strong> puede usar la demostración. Cada persona ve solo los resultados de su propia pestaña: las notas no se comparten entre navegadores.</li>
+        <li><strong>El equipo de ConectaEDU</strong> administra el servidor y puede ver el registro de uso, que no incluye el contenido de los trabajos.</li>
+        <li><strong>Anthropic</strong> recibe el contenido enviado para calificarlo, según lo explicado arriba.</li>
+      </ul>
+    </section>
+
+    <section aria-labelledby="titulo-pruebas">
+      <h2 id="titulo-pruebas">Trabajos de estudiantes en las pruebas</h2>
+      <p>En nuestras pruebas usamos trabajos ficticios o anonimizados. No usamos trabajos de estudiantes reales sin su consentimiento.</p>
+      <p>Antes del primer uso con IA, la página pide aceptar un aviso que recuerda usar trabajos anonimizados, sin nombres, cédulas, correos ni otros datos que identifiquen al estudiante. Si pruebas el prototipo, sigue esa misma regla.</p>
+    </section>
+
+    <section aria-labelledby="titulo-pendientes">
+      <h2 id="titulo-pendientes">Lo que todavía no está decidido</h2>
+      <ul>
+        <li>Dónde y por cuánto tiempo se guardarían los datos en un producto real.</li>
+        <li>Cómo pediría una persona ver, corregir o borrar sus datos.</li>
+        <li>Las condiciones del proveedor de IA sobre conservación de datos y entrenamiento de modelos.</li>
+        <li>Quién es, dentro del equipo, el responsable del tratamiento de los datos.</li>
+      </ul>
+    </section>
+
+    <section aria-labelledby="titulo-contacto">
+      <h2 id="titulo-contacto">Contacto</h2>
+      <p>Para preguntas o pedidos sobre esta política, abre un <em>issue</em> en los <a href="https://github.com/DanielGonzalezCeli/ConectaEDU/issues">Issues del repositorio</a>. Los issues son públicos: no escribas en ellos datos personales ni contenido de trabajos.</p>
+    </section>
+  </article>
+</main>
+
+<footer class="pie">
+  <div class="ancho pie-fila">
+    <p>Proyecto académico · PUCE · Emprendimiento Tecnológico</p>
+    <ul class="pie-enlaces">
+      <li><a href="index.html">Inicio</a></li>
+      <li><a href="https://github.com/DanielGonzalezCeli/ConectaEDU">Repositorio en GitHub</a></li>
+      <li>Código bajo licencia MIT</li>
+    </ul>
+  </div>
+</footer>
+</body>
+</html>
