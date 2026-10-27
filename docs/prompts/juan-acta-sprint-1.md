@@ -31,3 +31,13 @@ ESTADO DEL TABLERO (datos aportados por Juan):
 - Asistentes: [COMPLETAR]. Fecha y hora de reunión: [COMPLETAR].
 - Demo: pitch del 19 de octubre, demo en vivo del calificador con IA, una tarea real calificada con la rúbrica y comparada con la nota del docente.
 ```
+
+## Corrección posterior solicitada por Juan
+
+Redactar el acta con voz del equipo, sin notas sobre la conversación ni marcadores
+[COMPLETAR]. Datos confirmados por Juan: reunión del 25/10/2026 de 20:00 a 22:00,
+virtual por Microsoft Teams; asistentes Dilan Mena, Samantha Nuñez, Daniel Gonzalez
+y Juan Hoyos. Usar el cambio de prioridad hacia el calificador como motivo de las
+historias pendientes, conforme al estado del tablero aportado. Mantener las mejoras
+como propuestas y no inventar acuerdos, responsables ni fechas de aprobación.
+Crear un PR nuevo de corrección, ya que el PR #19 fue integrado.

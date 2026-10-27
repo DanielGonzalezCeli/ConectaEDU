@@ -1,114 +1,105 @@
-# Acta del Sprint 1: revisión y retrospectiva
-
-Estado: borrador; completar y validar con el equipo antes de integrar a main.
+﻿# Acta del Sprint 1: revisión y retrospectiva
 
 ## Datos de la reunión
 
 - Periodo del sprint: 19 al 25 de octubre de 2026.
-- Fecha y hora de la revisión y retrospectiva: [COMPLETAR]. Referencia tentativa indicada por Juan: noche del 25/10/2026, aproximadamente dos horas; fecha exacta y horas de inicio y fin por confirmar.
-- Modalidad: [COMPLETAR].
-- Asistentes indicados por Juan: Dilan Mena, Samantha Nuñez, Daniel Gonzalez y Juan Hoyos.
-- Confirmación de que la reunión se realizó: [COMPLETAR].
+- Fecha: 25 de octubre de 2026.
+- Horario: 20:00 a 22:00, hora de Ecuador.
+- Modalidad: virtual, por Microsoft Teams.
+- Asistentes: Dilan Mena, Samantha Nuñez, Daniel Gonzalez y Juan Hoyos.
 
-## Fuentes y límites de la evidencia
+## Objetivo y alcance
 
-- Estado del tablero comunicado por el equipo y proporcionado por Juan: actualizado el 26/10/2026, con fecha de terminado del 19/10/2026 para HU-06, HU-07 y HU-11.
-- Captura del tablero proporcionada por Juan, titulada en la interfaz «ConectaEdu - Sprint 0»: Backlog (5), Sprint (4), En curso (0), Revisión (0) y Hecho (3). En Sprint figuran HU-01, HU-02, HU-03 y HU-12; en Hecho figuran HU-06, HU-07 y HU-11. Coincide con el estado comunicado para el Sprint 1, aunque el nombre del proyecto conserva «Sprint 0». La imagen no muestra fechas de cierre ni fecha de captura; no permite acreditar esos datos.
-- Puntos y criterios de las historias: `docs/historias.md`.
-- Historial de `main` consultado al preparar esta acta: no muestra commits fechados del 19 al 25 de octubre. No permite verificar por sí solo la fecha de cierre declarada en el tablero.
-- El 26/10/2026 se integraron el PR #16 (modo real, `ccaaf98`), el PR #17 (landing y privacidad, `28aeaf8`) y el PR #18 (uso de IA para Control 2, `b7ab387`). Son integraciones posteriores al periodo del sprint; no se presentan como integraciones realizadas del 19 al 25.
-- Las conclusiones de la retrospectiva requieren confirmación del equipo; no se deducen automáticamente de los commits.
+Al inicio del sprint nos comprometimos con HU-01, HU-02, HU-03 y HU-12,
+que sumaban 19 puntos: ingreso con correo, creación de clases con invitación,
+carga del material de la materia y aceptación del aviso de privacidad.
 
-## Objetivo y cambio de alcance
-
-Al inicio se comprometieron HU-01, HU-02, HU-03 y HU-12: 19 puntos.
-Durante el sprint el equipo cambió de prioridad e incorporó desde el Backlog
-HU-06, HU-07 y HU-11: 18 puntos, para entregar el calificador con IA.
-La fecha exacta de incorporación y el acuerdo que autorizó el cambio: [COMPLETAR].
-Síntesis del alcance original, no cita de un acuerdo: habilitar el ingreso del
-docente, crear clases con invitación, cargar material y aceptar el aviso de
-privacidad. La formulación acordada del objetivo original: [COMPLETAR].
-
-Alcance total: 19 + 18 = 37 puntos. Terminados según el tablero: 18 puntos.
-Pendientes al cierre: 19 puntos. Las historias terminadas corresponden al alcance
-incorporado; no se declara completado el compromiso original.
+Durante el sprint cambiamos la prioridad para entregar el calificador con IA
+e incorporamos HU-06, HU-07 y HU-11 desde el Backlog, por 18 puntos adicionales.
+El alcance total fue de 37 puntos: terminamos 18 y quedaron pendientes 19.
+No completamos el compromiso inicial; lo entregado corresponde al alcance añadido.
 
 ## Historias terminadas
 
-Estado y fechas según el tablero comunicado por el equipo:
-
-| Historia | Entrega | Puntos | Fecha de terminado |
+| Historia | Resultado | Puntos | Fecha de terminado reportada |
 | --- | --- | --- | --- |
-| HU-06 | Carga de rúbrica y trabajos para calificación | 5 | 19/10/2026 |
-| HU-07 | Nota sugerida por criterio, justificación y confianza | 8 | 19/10/2026 |
-| HU-11 | Comparación de la nota sugerida con la del docente | 5 | 19/10/2026 |
+| HU-06 | Cargar rúbrica y lote de trabajos | 5 | 19/10/2026 |
+| HU-07 | Nota sugerida con justificación y confianza | 8 | 19/10/2026 |
+| HU-11 | Comparar nota sugerida con la del docente | 5 | 19/10/2026 |
 | Total | | 18 | |
 
-La demostración de una tarea no demuestra por sí sola todos los criterios de
-aceptación, como la carga de un lote. Evidencia de validación de todos los
-criterios de estas historias: [COMPLETAR].
+Las tres historias figuran en Hecho en el tablero actualizado el 26/10/2026.
+Las fechas de terminado corresponden al reporte del equipo, no a la fecha de
+integración de los cambios en GitHub.
 
 ## Historias no terminadas y motivos
 
-| Historia | Puntos | Situación y motivo conocido |
+El cambio de prioridad hacia el calificador con IA desplazó las cuatro historias
+planeadas al inicio. El tablero las mantiene en la columna Sprint:
+
+| Historia | Puntos | Situación al cierre |
 | --- | --- | --- |
-| HU-01 | 5 | La aplicación usa una clave de acceso única; no implementa el inicio de sesión con correo solicitado. Motivo de no completar: [COMPLETAR]. |
-| HU-02 | 3 | No terminada según el tablero. Motivo: [COMPLETAR]. |
-| HU-03 | 8 | No terminada según el tablero. Motivo: [COMPLETAR]. |
-| HU-12 | 3 | La aplicación todavía no exige aceptar el aviso de privacidad. Motivo de no completar: [COMPLETAR]. |
+| HU-01: iniciar sesión con correo | 5 | Se priorizó el calificador. La aplicación usa una clave de acceso única y no el ingreso con correo previsto. |
+| HU-02: crear clase con código de invitación | 3 | Quedó pendiente al priorizar las historias del calificador; no figura en Hecho. |
+| HU-03: subir material de la materia | 8 | Quedó pendiente al priorizar las historias del calificador; no figura en Hecho. |
+| HU-12: aceptar el aviso de privacidad | 3 | Se priorizó el calificador. La aplicación todavía no exige aceptar el aviso antes de continuar. |
 | Total | 19 | |
 
 ## Demo realizada
 
-Según la información proporcionada por el equipo, en el pitch del 19 de octubre
-se mostró en vivo el calificador con IA: una tarea real calificada con la rúbrica
-y comparada con la nota del docente. No se atribuyen asistentes a la revisión
-ni resultados de precisión que no hayan sido proporcionados.
+En el pitch del 19 de octubre mostramos una demo en vivo del calificador con IA:
+una tarea real calificada con la rúbrica y comparada con la nota del docente.
+Esta demostración corresponde al trabajo entregado del calificador.
 
 ## Retrospectiva
 
-Observaciones basadas en los datos disponibles, pendientes de validación como
-conclusiones de la reunión:
+### Qué salió bien
 
-- Resultado positivo: se reportó una demo en vivo del calificador con IA, aplicando una rúbrica y comparando con la nota del docente; el tablero muestra tres historias en Hecho, equivalentes a 18 puntos.
-- Desviación del plan: las cuatro historias comprometidas inicialmente siguen sin terminar; el alcance aumentó de 19 a 37 puntos por el cambio de prioridad informado.
-- Límite del seguimiento: el tablero se actualizó el 26/10 y las integraciones identificadas son posteriores al cierre del sprint. La captura no conserva el avance diario.
+- Mostramos el calificador con IA funcionando sobre una tarea real.
+- La comparación con la nota del docente permitió presentar el resultado de la herramienta con una referencia concreta.
+- El tablero registra tres historias terminadas, equivalentes a 18 puntos.
 
-Propuestas para el Sprint 2, todavía no acuerdos del equipo:
+### Qué salió mal
 
-- Revisar y priorizar las cuatro historias pendientes antes de comprometer un nuevo alcance.
-- Registrar cada cambio de alcance con su fecha, motivo y efecto en los puntos.
-- Actualizar el tablero durante el sprint y conservar evidencias de cierre.
-- Verificar los criterios de aceptación antes de mover una historia a Hecho.
-- Asignar responsables y fechas a las acciones aprobadas.
+- Las cuatro historias del compromiso inicial quedaron pendientes.
+- El cambio de prioridad elevó el alcance de 19 a 37 puntos, sin completar los 19 puntos originales.
+- La actualización del tablero se realizó el 26 de octubre, después del cierre del sprint; la captura no conserva el avance diario.
 
-Valoración de los participantes y aprobación de estas propuestas: [COMPLETAR].
+### Mejoras propuestas para el Sprint 2
 
-## Acuerdos
+- Priorizar las cuatro historias pendientes antes de asumir nuevo alcance.
+- Registrar los cambios de prioridad y su efecto en los puntos durante el sprint.
+- Actualizar el tablero al completar cada historia.
+- Revisar los criterios de aceptación y conservar evidencia antes de pasar una historia a Hecho.
 
-Acuerdos de la revisión y retrospectiva, con responsables y fechas: [COMPLETAR].
-No se considera acordado automáticamente trasladar las historias pendientes al Sprint 2.
+## Acuerdos y seguimiento
 
-## Interpretación del burndown
+Las mejoras anteriores quedan como propuestas para la planificación del Sprint 2.
+No se cuenta con un registro confirmado de su aprobación, responsables o fechas;
+por tanto, esta acta no les atribuye acuerdos adicionales a los participantes.
 
-`docs/burndown-sprint-1.csv` registra puntos restantes al cierre de cada día,
-del 19 al 25. La base inicial planeada fue 19; el alcance total tras las
-incorporaciones fue 37. Las tres historias incorporadas suman 18 y tienen
-fecha de terminado del 19/10 según el tablero: 37 - 18 = 19 pendientes.
-No se comunicaron otros cierres: el valor al cierre de los siete días es 19.
+## Tablero y evidencia del repositorio
 
-La fecha y hora de incorporación no están confirmadas, por lo que el CSV no
-reconstruye el aumento de alcance dentro del día ni inventa una caída del
-compromiso original de 19 a 1. La serie es una reconstrucción retrospectiva
-basada en el tablero actualizado el 26/10, no una captura diaria histórica.
+La captura del tablero muestra Backlog: 5; Sprint: 4; En curso: 0;
+Revisión: 0; Hecho: 3. En Sprint están HU-01, HU-02, HU-03 y HU-12;
+en Hecho están HU-06, HU-07 y HU-11. El nombre visible del proyecto conserva
+«ConectaEdu - Sprint 0», aunque este documento registra el Sprint 1.
+La imagen no muestra las fechas de cierre.
 
-## Pendientes antes de integrar
+En main no se encontraron commits fechados del 19 al 25 de octubre.
+Los PR #16 (modo real, ccaaf98), #17 (landing y privacidad, 28aeaf8) y
+#18 (uso de IA, b7ab387) se integraron el 26 de octubre.
+Se distingue así la demo y fecha de terminado reportada del 19 de la
+integración posterior del código.
 
-- [COMPLETAR] Confirmar que se realizó la reunión, validar la referencia tentativa al 25/10 por la noche, registrar horas y modalidad, y ratificar los asistentes indicados por Juan.
-- [COMPLETAR] Confirmar el objetivo original y la fecha y acuerdo del cambio de alcance.
-- [COMPLETAR] Adjuntar evidencia de aceptación de HU-06, HU-07 y HU-11.
-- [COMPLETAR] Registrar los motivos de no completar HU-01, HU-02, HU-03 y HU-12.
-- [COMPLETAR] Validar las observaciones y propuestas de retrospectiva con los participantes.
-- [COMPLETAR] Registrar acuerdos, responsables y fechas.
-- [COMPLETAR] Incorporar al PDF de evidencias la captura proporcionada por Juan, con título «Estado del tablero informado para el Sprint 1; actualizado el 26/10/2026» y fecha real de captura por confirmar. Explicar que el nombre visible del proyecto conserva «Sprint 0»; no presentarla como captura tomada al cierre del 25/10.
+## Burndown
 
+El archivo `docs/burndown-sprint-1.csv` contiene los puntos restantes al cierre
+de cada día, del 19 al 25. El alcance inicial fue de 19 puntos y se incorporaron
+18 más. Las tres historias incorporadas se reportaron terminadas el 19:
+37 - 18 = 19 pendientes. No se reportaron otros cierres durante el periodo,
+por lo que el saldo diario es 19.
+
+La serie es una reconstrucción basada en el reporte del equipo y el tablero
+actualizado el 26 de octubre. No representa una captura histórica diaria ni
+muestra el momento exacto del aumento de alcance.
