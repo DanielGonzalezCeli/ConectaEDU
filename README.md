@@ -60,6 +60,10 @@ Funciona **sin internet y sin claves**. Elija una opción:
 
 Para publicarlo con clave de acceso en Render, ver [docs/despliegue-render.md](docs/despliegue-render.md).
 
+### Acceso a la versión publicada
+
+La web publicada en Render **no tiene cuentas de usuario**. Se entra con **una sola clave de acceso compartida** (`CLAVE_ACCESO`), la misma para todas las personas que prueban la demostración; el servidor no sabe quién es cada visitante. El «Iniciar sesión» como docente o estudiante que aparece después dentro de la página es parte de la demostración simulada: no verifica a nadie.
+
 ### Cómo se usa
 
 En una clase: *Tareas y calificación* → *Nueva tarea* → rúbrica propia → trabajos en `.txt`, `.md` o `.pdf` (hasta 5 MB), o texto pegado. Word (`.docx`) todavía no: hay que guardarlo como PDF o pegar el texto. Antes del primer uso, la página pide aceptar un aviso de privacidad. Al calificar:
@@ -103,7 +107,7 @@ La página simula el producto completo con dos roles. Todo vive en memoria: al r
 4. **Dentro de la clase** (menú lateral):
    - *Resumen*: métricas y primeros pasos.
    - *Material del tutor*: arrastrar documentos (no se leen ni se envían; solo se muestra el nombre) y reglas del tutor.
-   - *Tareas y calificación*: crear una tarea con su rúbrica, subir trabajos, calificar (simulado), revisar, aprobar y exportar CSV solo con notas aprobadas.
+   - *Tareas y calificación*: crear una tarea con su rúbrica, subir trabajos, calificar (con IA real si hay clave configurada; si no, simulado), revisar, aprobar y exportar CSV solo con notas aprobadas.
    - *Actividad del tutor*: la conversación en vivo del estudiante de la demo y un curso ficticio.
    - *Estudiantes*: lista y código de la clase.
 

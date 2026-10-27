@@ -4,6 +4,7 @@ Pasos para publicar el PMV con IA real detrás de una clave de acceso, y para pr
 
 ## Qué protege al despliegue
 
+- **No hay cuentas de usuario.** Todas las personas entran con la misma clave de acceso; el servidor no distingue quién es quién. El «Iniciar sesión» de docente o estudiante dentro de la página es parte de la demostración simulada.
 - **Clave de acceso (`CLAVE_ACCESO`).** Sin ella no se ve la página ni se puede llamar a la IA. Al entrar, el navegador recibe una cookie firmada que dura 12 horas; la clave no viaja de vuelta. Diez intentos fallidos desde la misma IP bloquean el acceso durante 15 minutos.
 - **Límites de gasto.** `LIMITE_LLAMADAS_POR_HORA` (60 por defecto) para todo el servidor y `LIMITE_POR_IP_POR_HORA` (40 por defecto) por conexión. Quienes comparten la misma red wifi comparten IP pública.
 - **`/salud`.** Responde `{"estado":"ok"}` sin pedir acceso; Render la usa para saber si el servicio está vivo.
