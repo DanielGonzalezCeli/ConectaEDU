@@ -82,3 +82,5 @@ function enlazarMarco(raiz) {
 iniciarDatos();
 window.addEventListener('hashchange', render);
 render();
+// Si el servidor tiene IA real, se vuelve a pintar con el modo real activo.
+cargarEstadoIA().then(() => { if (modoReal()) render(); });

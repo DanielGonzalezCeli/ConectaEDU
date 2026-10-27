@@ -338,3 +338,104 @@ tbody tr:hover { background: #FAFBFE; }
   .chat-tarjeta { order: -1; }
   .chat { height: 380px; }
 }
+
+/* ---------- Modo IA real (Fase B mínima; el rediseño viene después) ---------- */
+.banner.real { background: #0B3A6E; color: #fff; }
+.info-real { display: flex; gap: 10px; align-items: flex-start; background: var(--puce-claro); border: 1px solid #C9D8EC; color: #23364F; border-radius: 12px; padding: 10px 14px; font-size: 13.5px; margin-bottom: 16px; }
+.ventana-fondo { position: fixed; inset: 0; background: rgba(15, 25, 40, .45); display: grid; place-items: center; padding: 16px; z-index: 50; }
+.ventana { background: var(--superficie); border-radius: 12px; padding: 20px 22px; width: min(560px, 100%); max-height: calc(100vh - 32px); overflow: auto; box-shadow: 0 10px 40px rgba(0, 0, 0, .25); }
+.ventana h2 { font-size: 18px; color: var(--puce); margin: 0 0 10px; }
+.ventana p { margin: 0 0 10px; font-size: 14.5px; }
+.ventana textarea { width: 100%; font: inherit; }
+.casilla { display: flex; gap: 8px; align-items: flex-start; font-weight: 600; margin: 12px 0 4px; cursor: pointer; }
+.casilla input { margin-top: 4px; }
+.error-casilla { color: var(--rojo); font-size: 13.5px; }
+.estado { font-size: 13px; color: var(--suave); white-space: nowrap; }
+.estado::before { content: ""; display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: #A9B4C4; margin-right: 6px; vertical-align: 1px; }
+.estado.activo::before { background: var(--puce-2); }
+.estado.ok::before { background: var(--verde); }
+.estado.mal { color: var(--rojo); font-weight: 600; }
+.estado.mal::before { background: var(--rojo); }
+.error-linea { display: block; flex-basis: 100%; color: var(--rojo); font-size: 13px; padding-left: 4px; }
+.archivo { flex-wrap: wrap; }
+.advertencias { display: flex; gap: 10px; background: var(--ambar-f); color: #6B4500; border-radius: 10px; padding: 10px 14px; margin: 12px 0; font-size: 14px; }
+.advertencias ul { margin: 4px 0 0; padding-left: 18px; }
+.comentario { font-size: 14px; margin: 10px 0; }
+.cita-criterio { margin-top: 6px; font-size: 13px; font-style: italic; color: #3A4A60; border-left: 3px solid var(--puce-2); padding-left: 8px; }
+.cita-criterio.mal { border-left-color: var(--rojo); }
+.cita-criterio span { font-style: normal; color: var(--suave); }
+.cita-criterio.mal span { color: var(--rojo); font-weight: 600; }
+td .ayuda, th .ayuda { display: block; font-size: 12px; font-weight: 400; color: var(--suave); }
+input.docente { width: 70px; padding: 6px 8px; border: 1px solid var(--borde); border-radius: 8px; font: inherit; font-variant-numeric: tabular-nums; }
+.texto-trabajo { margin-top: 12px; }
+.texto-trabajo summary { cursor: pointer; font-weight: 600; color: var(--puce); }
+.texto-trabajo pre { white-space: pre-wrap; font-family: inherit; font-size: 14px; background: var(--superficie); border: 1px solid var(--borde); border-radius: 10px; padding: 12px 14px; max-height: 360px; overflow: auto; }
+.tarjeta h3 { font-size: 15px; color: var(--texto); margin: 18px 0 8px; }
+.comp-cifra { display: flex; gap: 14px; align-items: baseline; flex-wrap: wrap; margin: 6px 0 10px; }
+.comp-cifra b { font-size: 40px; line-height: 1; color: var(--puce); font-variant-numeric: tabular-nums; }
+.comp-cifra span { color: var(--suave); max-width: 520px; }
+th.n, td.n { text-align: right; font-variant-numeric: tabular-nums; }
+.diferencias { padding-left: 18px; margin: 0; }
+.diferencias li { margin-bottom: 8px; }
+.diferencias li span { display: block; color: var(--suave); font-size: 13.5px; }
+.tiempos { padding-left: 18px; margin: 4px 0 0; }
+.vacio-linea { color: var(--suave); background: #F3F5F9; border-radius: 10px; padding: 12px 14px; }
+
+/* ---------- Celular (hasta 600 px) ---------- */
+.solo-movil { display: none; }
+@media (max-width: 600px) {
+  .banner { font-size: 12.5px; padding: 7px 12px; line-height: 1.4; }
+  .solo-ancho { display: none; }
+  .solo-movil { display: inline; }
+  /* Quien entra desde el QR ve primero el formulario; la presentación queda debajo. */
+  .ingreso .formulario { order: -1; }
+  .ingreso .hero { padding: 28px 20px; }
+  .contenido { padding: 16px 12px 40px; }
+  .tarjeta { padding: 16px 14px; }
+
+  /* Tablas como fichas apiladas: una ficha por fila, con el nombre de cada dato. */
+  .tabla-envoltura:has(> table.apilable) { overflow: visible; }
+  table.apilable thead { display: none; }
+  table.apilable, table.apilable tbody, table.apilable tr, table.apilable td { display: block; width: 100%; }
+  table.apilable tr { border: 1px solid var(--borde); border-radius: 10px; padding: 8px 12px; margin-bottom: 10px; background: var(--superficie); }
+  table.apilable tbody tr:hover { background: var(--superficie); }
+  /* El contenido va a la derecha y junto (p. ej. «7,5 / 10»); el nombre del dato flota a la izquierda. */
+  table.apilable td { border: 0; padding: 5px 0; text-align: right; overflow: hidden; }
+  table.apilable td::before { content: attr(data-et); float: left; margin-right: 12px; font-size: 13px; font-weight: 600; color: var(--suave); text-align: left; max-width: 55%; }
+  table.revision td::before { line-height: 40px; }
+  table.apilable td:first-child { display: block; text-align: left; font-size: 15px; padding-top: 2px; }
+  table.apilable td:first-child::before, table.apilable td[data-et=""]::before { display: none; }
+  table.apilable td[data-et=""] { display: block; text-align: left; }
+  table.apilable td[data-et=""] .btn { width: 100%; justify-content: center; }
+  table.apilable td.bloque { display: block; text-align: left; }
+  table.apilable td.bloque::before { float: none; display: block; margin-bottom: 2px; max-width: none; line-height: inherit; }
+
+  /* Tamaños cómodos para el dedo; 16 px en campos evita el zoom automático del iPhone. */
+  input, select, textarea { font-size: 16px; }
+  input.num, input.docente { width: 84px; min-height: 40px; }
+  .btn.chico { min-height: 36px; }
+  .quitar { min-width: 40px; min-height: 40px; }
+  .atajos button { min-height: 36px; }
+
+  .toasts { left: 12px; right: 12px; bottom: 12px; }
+  .toast { max-width: none; }
+  .toasts .toast:nth-last-child(n+3) { display: none; }
+  .ventana { padding: 16px; }
+  .ventana .fila.fin .btn { flex: 1 1 auto; justify-content: center; }
+  .comp-cifra b { font-size: 34px; }
+}
+
+/* ---------- Pantallas táctiles (celulares y tabletas) ---------- */
+@media (pointer: coarse) {
+  .btn.chico { min-height: 36px; }
+  .quitar { min-width: 40px; min-height: 40px; }
+  .atajos button { min-height: 36px; }
+  input, select, textarea { font-size: 16px; }
+}
+@media (max-width: 900px) {
+  .archivo .tipo, .lateral nav a .cuenta { font-size: 12px; }
+}
+
+/* Tokens y costo de la IA */
+.costo-lote { font-size: 13.5px; color: var(--suave); margin: 10px 0 0; font-variant-numeric: tabular-nums; }
+.costo-trabajo { font-size: 12.5px; color: var(--suave); font-variant-numeric: tabular-nums; }

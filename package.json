@@ -5,7 +5,8 @@
   "description": "ConectaEdu · prototipo clicable con datos de ejemplo (Fase 0)",
   "scripts": {
     "start": "node servidor.js",
-    "test": "node --test"
+    "test": "node --test",
+    "probar-ia": "node scripts/probar-ia.js"
   },
   "engines": {
     "node": ">=18"
