@@ -76,3 +76,57 @@ test('error 6 corregido: el panel del curso tiene datos coherentes', () => {
   assert.equal(DATOS.curso.length, 8);
   DATOS.curso.forEach(e => assert.ok(e.atasco === null || (e.atasco >= 1 && e.atasco <= DATOS.problema.pasos.length)));
 });
+
+/* ---------- HU-08: editar por criterio y aprobar; la aprobada se distingue ---------- */
+test('HU-08: recién calificada, la nota está "sugerida" y no hay criterios editados', () => {
+  const [t] = nuevos();
+  assert.equal(C.estadoNota(t), 'sugerida');
+  assert.deepEqual(C.criteriosEditados(t), []);
+});
+
+test('HU-08: editar un criterio la deja "editada" y marca ese criterio', () => {
+  const [t] = nuevos();
+  C.editarCriterio(t, 1, '1', criterios);
+  assert.equal(C.estadoNota(t), 'editada');
+  assert.deepEqual(C.criteriosEditados(t), [1]);
+  assert.deepEqual(C.resumenNota(t), { sugerida: 9, final: 7.5, estado: 'editada', editados: [1] });
+});
+
+test('HU-08: aprobar deja la nota "aprobada", con quién y cuándo', () => {
+  const [t] = nuevos();
+  C.editarCriterio(t, 0, '3', criterios);
+  C.aprobar(t, 'Docente de ejemplo', DATOS.rubrica.nombre, fecha);
+  assert.equal(C.estadoNota(t), 'aprobada');
+  assert.equal(t.aprobacion.por, 'Docente de ejemplo');
+  assert.equal(t.aprobacion.fecha, fecha);
+  assert.equal(t.aprobacion.nota, 8.5);
+});
+
+test('HU-08: el docente puede aprobar la sugerencia sin cambiarla', () => {
+  const [t] = nuevos();
+  C.aprobar(t, 'Docente de ejemplo', DATOS.rubrica.nombre, fecha);
+  assert.equal(C.estadoNota(t), 'aprobada');
+  assert.deepEqual(C.criteriosEditados(t), []);
+});
+
+test('HU-08: editar una nota aprobada la vuelve "editada" y exige aprobar otra vez', () => {
+  const [t] = nuevos();
+  C.aprobar(t, 'Docente de ejemplo', DATOS.rubrica.nombre, fecha);
+  C.editarCriterio(t, 2, '0', criterios);
+  assert.equal(C.estadoNota(t), 'editada');
+  assert.equal(t.aprobacion, null);
+});
+
+test('HU-08: si vuelve al valor sugerido sin aprobar, sigue siendo una sugerencia', () => {
+  const [t] = nuevos();
+  C.editarCriterio(t, 0, '1', criterios);
+  C.editarCriterio(t, 0, String(t.puntos[0]), criterios);
+  assert.equal(C.estadoNota(t), 'sugerida');
+});
+
+test('HU-08: la nota aprobada tiene un estilo distinto de la sugerida y de la editada', () => {
+  const clases = ['sugerida', 'editada', 'aprobada'].map(e => C.ESTILO_NOTA[e].celda);
+  assert.equal(new Set(clases).size, 3);
+  assert.equal(C.ESTILO_NOTA.aprobada.clase, 'e-ok');
+  assert.match(C.ESTILO_NOTA.sugerida.texto, /sin aprobar/);
+});

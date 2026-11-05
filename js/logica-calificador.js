@@ -35,6 +35,30 @@ function aprobar(trabajo, docente, rubrica, fecha) {
   trabajo.aprobacion = { por: docente, fecha: fecha, rubrica: rubrica, nota: suma(trabajo.final) };
 }
 
+// HU-08: índices de los criterios donde la nota final difiere de la sugerida.
+function criteriosEditados(trabajo) {
+  return trabajo.final.map((v, i) => (v !== trabajo.puntos[i] ? i : -1)).filter(i => i >= 0);
+}
+
+// Estado visible de la nota: 'sugerida' (tal como la propuso la IA), 'editada'
+// (el docente la cambió y falta aprobar) o 'aprobada' (decisión del docente).
+function estadoNota(trabajo) {
+  if (trabajo.estado === 'Aprobada' && trabajo.aprobacion) return 'aprobada';
+  return criteriosEditados(trabajo).length ? 'editada' : 'sugerida';
+}
+
+// Texto y estilo de cada estado. La nota aprobada usa un estilo propio (verde,
+// con marca) para que nunca se confunda con una sugerencia.
+const ESTILO_NOTA = {
+  sugerida: { texto: 'Sugerida · sin aprobar', clase: 'e-neutro', celda: 'nota-sin-aprobar' },
+  editada: { texto: 'Editada · falta aprobar', clase: 'e-aviso', celda: 'nota-editada' },
+  aprobada: { texto: 'Aprobada por el docente', clase: 'e-ok', celda: 'nota-aprobada' }
+};
+
+function resumenNota(trabajo) {
+  return { sugerida: suma(trabajo.puntos), final: suma(trabajo.final), estado: estadoNota(trabajo), editados: criteriosEditados(trabajo) };
+}
+
 // Los de confianza baja van primero; el resto mantiene su orden.
 function ordenarParaRevision(trabajos) {
   return trabajos.slice().sort((a, b) => (a.confianza === 'Baja' ? -1 : 0) - (b.confianza === 'Baja' ? -1 : 0));
@@ -55,5 +79,5 @@ function generarCSV(trabajos) {
 }
 
 if (typeof module !== 'undefined' && module.exports) {
-  module.exports = { suma, fmt, prepararTrabajos, limitarPuntos, editarCriterio, aprobar, ordenarParaRevision, fechaISO, generarCSV };
+  module.exports = { suma, fmt, prepararTrabajos, limitarPuntos, editarCriterio, aprobar, criteriosEditados, estadoNota, ESTILO_NOTA, resumenNota, ordenarParaRevision, fechaISO, generarCSV };
 }

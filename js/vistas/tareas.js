@@ -163,7 +163,8 @@ function vistaTarea(claseId, tareaId) {
       '<div class="tarjeta"><h2>' + icono('chispa') + 'Notas sugeridas ' +
         (tarea.real ? '<span class="etiqueta e-ok">IA real · ' + esc((tarea.trabajos.find(t => t.modelo) || {}).modelo || IA.modelo || '') + '</span>' : '<span class="etiqueta e-sim">simuladas</span>') + '</h2>' +
         '<p class="nota">Son sugerencias. Puedes cambiar cualquier criterio y tú apruebas la nota final. Los de confianza baja aparecen primero.</p>' +
-        '<div class="tabla-envoltura"><table class="apilable"><thead><tr><th>Estudiante</th><th>Nota sugerida</th><th>Confianza</th><th>Estado</th><th></th></tr></thead><tbody id="filas-calif"></tbody></table></div>' +
+        '<div class="tabla-envoltura"><table class="apilable"><thead><tr><th>Estudiante</th><th>Sugerida por la IA</th><th>Nota final</th><th>Confianza</th><th></th></tr></thead><tbody id="filas-calif"></tbody></table></div>' +
+        '<p class="leyenda-notas"><span class="etiqueta e-neutro">Sugerida · sin aprobar</span><span class="etiqueta e-aviso">Editada · falta aprobar</span><span class="nota-aprobada">' + icono('check') + 'Aprobada por ti</span></p>' +
         (tarea.real ? '<p class="costo-lote" id="costo-lote" aria-live="polite"></p>' : '') +
         '<div id="detalle-calif"></div>' +
         '<div class="fila" style="margin-top:16px"><button class="btn sec" id="btn-exportar">' + icono('descargar') + 'Descargar CSV para el aula virtual</button><span class="nota" style="margin:0" id="aviso-exportar"></span></div>' +
@@ -228,11 +229,12 @@ function pintarResultados(tarea) {
       return;
     }
     const claseConf = t.confianza === 'Alta' ? 'e-ok' : t.confianza === 'Media' ? 'e-aviso' : 'e-mal';
-    const claseEst = t.estado === 'Aprobada' ? 'e-ok' : t.estado === 'Editada' ? 'e-aviso' : 'e-neutro';
-    tr.innerHTML = '<td><b>' + esc(t.id) + '</b></td><td><b>' + fmt(suma(t.final)) + '</b> / ' + total + '</td>' +
+    const r = resumenNota(t);
+    if (r.estado === 'aprobada') tr.className = 'fila-aprobada';
+    tr.innerHTML = '<td><b>' + esc(t.id) + '</b></td><td><span class="nota-sugerida">' + fmt(r.sugerida) + ' / ' + total + '</span></td>' +
+      '<td>' + celdaNotaFinal(r, total) + '</td>' +
       '<td><span class="etiqueta ' + claseConf + '">' + t.confianza + (marcar(t) ? ' · revisar primero' : '') + '</span></td>' +
-      '<td><span class="etiqueta ' + claseEst + '">' + (t.estado === 'Aprobada' ? icono('check') : '') + t.estado + '</span></td>' +
-      '<td><button class="btn chico sec" data-id="' + esc(t.id) + '">Revisar</button></td>';
+      '<td><button class="btn chico sec" data-id="' + esc(t.id) + '">' + (r.estado === 'aprobada' ? 'Ver' : 'Revisar') + '</button></td>';
     filas.appendChild(tr);
   });
   filas.querySelectorAll('[data-id]').forEach(b => b.addEventListener('click', () => verDetalle(tarea, b.dataset.id)));
@@ -253,6 +255,13 @@ function pintarResultados(tarea) {
   document.getElementById('aviso-exportar').textContent = aprobadas === 0
     ? 'Aprueba al menos una nota para exportar. Solo se exportan notas aprobadas.'
     : 'Se exportan solo las notas aprobadas (' + aprobadas + ' de ' + trabajos.length + ').';
+}
+
+// Nota final con su estado: la aprobada se ve distinta de cualquier sugerencia.
+function celdaNotaFinal(r, total) {
+  const e = ESTILO_NOTA[r.estado];
+  if (r.estado === 'aprobada') return '<span class="nota-aprobada">' + icono('check') + fmt(r.final) + ' / ' + total + '</span>';
+  return '<span class="' + e.celda + '">' + fmt(r.final) + ' / ' + total + '</span> <span class="etiqueta ' + e.clase + '">' + e.texto + '</span>';
 }
 
 function textoRegistro(t) {
@@ -278,19 +287,24 @@ function verDetalle(tarea, id) {
   criterios.forEach((c, i) => {
     const citaCriterio = real && t.citas && t.citas[i]
       ? '<div class="cita-criterio' + (t.estadoCitas[i] === 'no_verificada' ? ' mal' : '') + '">“' + esc(t.citas[i]) + '” <span>(' + ESTADO_CITA[t.estadoCitas[i]] + ')</span></div>' : '';
-    html += '<tr><td><b>' + esc(c.nombre) + '</b>' + (real ? '<div class="ayuda">IA sugirió ' + fmt(t.puntos[i]) + ' · confianza ' + esc((t.confianzas || [])[i] || '') + '</div>' : '') + '</td>' +
-      '<td style="white-space:nowrap"><input class="num" type="number" step="0.5" min="0" max="' + c.max + '" value="' + t.final[i] + '" data-i="' + i + '" aria-label="Nota final de ' + esc(c.nombre) + '"> / ' + fmt(c.max) + '</td>' +
+    html += '<tr><td><b>' + esc(c.nombre) + '</b><div class="ayuda">Sugerida: ' + fmt(t.puntos[i]) + (real ? ' · confianza ' + esc((t.confianzas || [])[i] || '') : '') + '</div></td>' +
+      '<td style="white-space:nowrap"><input class="num' + (t.final[i] !== t.puntos[i] ? ' editado' : '') + '" type="number" step="0.5" min="0" max="' + c.max + '" value="' + t.final[i] + '" data-i="' + i + '" aria-label="Nota final de ' + esc(c.nombre) + '"> / ' + fmt(c.max) + '</td>' +
       (real ? '<td><input class="docente" type="text" inputmode="decimal" value="' + esc(t.notasDocente[i]) + '" data-d="' + i + '" placeholder="—" aria-label="Tu nota a mano en ' + esc(c.nombre) + '"></td>' : '') +
       '<td class="bloque">' + esc(t.just[i]) + citaCriterio + '</td></tr>';
   });
   html += '</tbody></table></div>' +
     (real && t.archivoRef && t.archivoRef.texto != null ? '<details class="texto-trabajo"><summary>Ver el texto del trabajo</summary><pre>' + esc(t.archivoRef.texto) + '</pre></details>' : '') +
-    '<div class="fila" style="margin-top:14px"><b style="font-size:16px">Nota final: <span id="nota-final">' + fmt(suma(t.final)) + '</span></b><span class="espacio"></span>' +
+    '<div class="fila" style="margin-top:14px"><span class="nota-sugerida">Sugerida por la IA: ' + fmt(suma(t.puntos)) + '</span><b style="font-size:16px">Nota final: <span id="nota-final">' + fmt(suma(t.final)) + '</span></b><span id="estado-nota"></span><span class="espacio"></span>' +
     '<button class="btn exito" id="btn-aprobar">' + icono('check') + (t.estado === 'Aprobada' ? 'Aprobada' : 'Aprobar nota') + '</button></div>' +
     '<div class="registro" id="registro"></div></div>';
   cont.innerHTML = html;
   const registro = document.getElementById('registro');
   const pintarRegistro = () => {
+    const r = resumenNota(t);
+    cont.querySelector('.detalle').classList.toggle('aprobada', r.estado === 'aprobada');
+    document.getElementById('estado-nota').innerHTML = r.estado === 'aprobada'
+      ? '<span class="nota-aprobada">' + icono('check') + 'Aprobada</span>'
+      : '<span class="etiqueta ' + ESTILO_NOTA[r.estado].clase + '">' + ESTILO_NOTA[r.estado].texto + '</span>';
     registro.className = 'registro' + (t.aprobacion ? '' : ' pendiente');
     registro.innerHTML = icono(t.aprobacion ? 'escudo' : 'info') + '<span></span>';
     registro.querySelector('span').textContent = textoRegistro(t);
@@ -301,6 +315,7 @@ function verDetalle(tarea, id) {
     const i = Number(inp.dataset.i);
     inp.addEventListener('input', () => {
       editarCriterio(t, i, inp.value, criterios);
+      inp.classList.toggle('editado', t.final[i] !== t.puntos[i]);
       document.getElementById('nota-final').textContent = fmt(suma(t.final));
       document.getElementById('btn-aprobar').innerHTML = icono('check') + 'Aprobar nota';
       pintarRegistro();

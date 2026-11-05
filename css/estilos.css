@@ -239,6 +239,15 @@ tbody tr:hover { background: #FAFBFE; }
 .cita { background: var(--puce-claro); border-left: 4px solid var(--puce-2); padding: 10px 14px; margin: 6px 0 14px; font-style: italic; color: #3A4A60; border-radius: 0 10px 10px 0; }
 .registro { display: flex; gap: 10px; align-items: flex-start; background: var(--verde-f); color: #1B5E37; border-radius: 10px; padding: 10px 12px; font-size: 13.5px; margin-top: 12px; }
 .registro.pendiente { background: var(--ambar-f); color: #7A4E00; }
+/* HU-08: la nota aprobada se distingue de la sugerida */
+.nota-sugerida { color: var(--suave); }
+.nota-sin-aprobar { color: var(--suave); font-weight: 600; }
+.nota-editada { font-weight: 700; color: #7A4E00; }
+.nota-aprobada { display: inline-flex; align-items: center; gap: 5px; font-weight: 700; color: #1B5E37; background: var(--verde-f); border: 1px solid #8FCFA6; border-radius: 999px; padding: 2px 10px; white-space: nowrap; }
+tr.fila-aprobada > td:first-child { box-shadow: inset 4px 0 0 var(--verde); }
+input.num.editado { border-color: var(--ambar); background: var(--ambar-f); }
+.detalle.aprobada { border-color: var(--verde); box-shadow: inset 4px 0 0 var(--verde); }
+.leyenda-notas { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin: 10px 0 0; font-size: 13px; }
 
 /* ---------- Chat del tutor ---------- */
 .chat-tarjeta { display: flex; flex-direction: column; }
