@@ -10,6 +10,7 @@ Este registro declara cómo se usó IA en ConectaEdu. La IA no es autora del pro
 | 18 de octubre de 2026 | Claude Sonnet 5.5 (Anthropic), dentro del producto | Sugerir notas con la rúbrica del docente en el modo real; el docente revisa y aprueba cada nota | El docente que usa la herramienta |
 | Octubre 2026 | Claude Code | Landing page y política de privacidad (`docs/index.html`, `docs/privacidad.html`) | Juan Francisco Hoyos Renteira (por confirmar) |
 | Octubre 2026 | Claude (Anthropic) | Ordenar las notas de las encuestas y redactar los formatos 3, 5, 6 y 12 y el documento técnico v0.2 | Daniel Hernán González Celi |
+| 5 de noviembre de 2026 | Claude Code (Anthropic) | Sprint 2: aviso de privacidad antes de calificar (HU-12), nota aprobada distinguible de la sugerida (HU-08) y CSV seguro solo con notas aprobadas (HU-09), con 22 pruebas nuevas; protocolo de la prueba con usuarios (`docs/pruebas.md`), secciones de evidencia y equipo de la landing y notas de la v0.3.0 (prompt en `docs/prompts/daniel-sprint2-pruebas.md`) | Por confirmar |
 
 ## Reglas del equipo
 
