@@ -14,7 +14,7 @@ Pasos para publicar el PMV con IA real detrás de una clave de acceso, y para pr
 ## Pasos
 
 1. Entra a <https://dashboard.render.com> con tu cuenta de GitHub.
-2. **New → Blueprint** y elige el repositorio `DanielGonzalezCeli/ConectaEDU`. Render lee `render.yaml` (rama `feat/modo-real`).
+2. **New → Blueprint** y elige el repositorio `DanielGonzalezCeli/ConectaEDU`. Render lee `render.yaml` de la rama `main`. Si el Blueprint ya existía con otra rama, cámbiala a `main` en la configuración del Blueprint, en el panel de Render.
 3. Te pedirá los valores secretos:
    - `PROVEEDOR_IA_CLAVE`: tu clave del proveedor de IA.
    - `CLAVE_ACCESO`: una frase larga para la demostración (por ejemplo, tres palabras y un número). Cámbiala después del pitch.
