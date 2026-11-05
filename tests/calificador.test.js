@@ -130,3 +130,51 @@ test('HU-08: la nota aprobada tiene un estilo distinto de la sugerida y de la ed
   assert.equal(C.ESTILO_NOTA.aprobada.clase, 'e-ok');
   assert.match(C.ESTILO_NOTA.sugerida.texto, /sin aprobar/);
 });
+
+/* ---------- HU-09: CSV solo con notas aprobadas ---------- */
+test('HU-09: una nota editada después de aprobarla no sale en el CSV', () => {
+  const ts = nuevos();
+  C.aprobar(ts[0], 'Docente de ejemplo', DATOS.rubrica.nombre, fecha);
+  C.aprobar(ts[1], 'Docente de ejemplo', DATOS.rubrica.nombre, fecha);
+  C.editarCriterio(ts[1], 0, '0', criterios);
+  const filas = C.generarCSV(ts).trim().split('\n');
+  assert.equal(filas.length, 2, 'encabezado + 1 aprobada');
+  assert.match(filas[1], /^Estudiante 01,/);
+});
+
+test('HU-09: sugeridas y editadas sin aprobar no salen en el CSV', () => {
+  const ts = nuevos();
+  C.editarCriterio(ts[0], 0, '1', criterios);
+  assert.equal(C.generarCSV(ts), 'Estudiante,Nota final,Aprobada por,Fecha de aprobación\n');
+});
+
+test('HU-09: comas, comillas y saltos de línea no rompen las columnas', () => {
+  const [t] = nuevos();
+  t.id = 'Trabajo 1, grupo "A"';
+  C.aprobar(t, 'Docente de ejemplo', DATOS.rubrica.nombre, fecha);
+  const fila = C.generarCSV([t]).split('\n')[1];
+  assert.equal(fila, '"Trabajo 1, grupo ""A""",9,Docente de ejemplo,2026-10-05 09:30');
+  assert.equal(C.celdaCSV('línea 1\nlínea 2'), '"línea 1\nlínea 2"');
+});
+
+test('HU-09: un texto que Excel leería como fórmula se exporta como texto', () => {
+  assert.equal(C.celdaCSV('=HYPERLINK("http://x")'), '"\'=HYPERLINK(""http://x"")"');
+  assert.equal(C.celdaCSV('+57'), "'+57");
+  assert.equal(C.celdaCSV('@SUMA'), "'@SUMA");
+  assert.equal(C.celdaCSV(-1), "'-1");
+});
+
+test('HU-09: la nota se redondea a dos decimales', () => {
+  const [t] = nuevos();
+  t.final = [0.1, 0.2, 0, 0];
+  C.aprobar(t, 'Docente de ejemplo', DATOS.rubrica.nombre, fecha);
+  assert.match(C.generarCSV([t]).split('\n')[1], /^Estudiante 01,0\.3,/);
+});
+
+test('HU-09: el archivo empieza con BOM UTF-8 para que Excel muestre las tildes', () => {
+  const ts = nuevos();
+  C.aprobar(ts[0], 'Docente de ejemplo', DATOS.rubrica.nombre, fecha);
+  const contenido = C.contenidoCSV(ts);
+  assert.equal(contenido.charCodeAt(0), 0xFEFF);
+  assert.ok(contenido.includes('Fecha de aprobación'), 'la tilde se conserva');
+});

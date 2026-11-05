@@ -69,15 +69,29 @@ function fechaISO(fecha) {
   return fecha.getFullYear() + '-' + p(fecha.getMonth() + 1) + '-' + p(fecha.getDate()) + ' ' + p(fecha.getHours()) + ':' + p(fecha.getMinutes());
 }
 
-// CSV para el aula virtual: SOLO notas aprobadas por el docente.
+// Una celda de CSV segura: entre comillas si trae coma, comillas o salto de línea,
+// y con un apóstrofo delante si Excel la leería como fórmula (=, +, -, @).
+function celdaCSV(valor) {
+  let v = String(valor == null ? '' : valor);
+  if (/^[=+\-@\t\r]/.test(v)) v = "'" + v;
+  return /[",\r\n]/.test(v) ? '"' + v.replace(/"/g, '""') + '"' : v;
+}
+
+// HU-09: CSV para el aula virtual con SOLO las notas aprobadas por el docente.
 function generarCSV(trabajos) {
   let csv = 'Estudiante,Nota final,Aprobada por,Fecha de aprobación\n';
-  trabajos.filter(t => t.estado === 'Aprobada').forEach(t => {
-    csv += t.id + ',' + suma(t.final) + ',' + t.aprobacion.por + ',' + fechaISO(t.aprobacion.fecha) + '\n';
+  trabajos.filter(t => t.estado === 'Aprobada' && t.aprobacion).forEach(t => {
+    const nota = Math.round(suma(t.final) * 100) / 100; // evita 0.30000000000000004
+    csv += [t.id, nota, t.aprobacion.por, fechaISO(t.aprobacion.fecha)].map(celdaCSV).join(',') + '\n';
   });
   return csv;
 }
 
+// Contenido del archivo: con BOM UTF-8 para que Excel muestre bien las tildes.
+function contenidoCSV(trabajos) {
+  return '﻿' + generarCSV(trabajos);
+}
+
 if (typeof module !== 'undefined' && module.exports) {
-  module.exports = { suma, fmt, prepararTrabajos, limitarPuntos, editarCriterio, aprobar, criteriosEditados, estadoNota, ESTILO_NOTA, resumenNota, ordenarParaRevision, fechaISO, generarCSV };
+  module.exports = { suma, fmt, prepararTrabajos, limitarPuntos, editarCriterio, aprobar, criteriosEditados, estadoNota, ESTILO_NOTA, resumenNota, ordenarParaRevision, fechaISO, celdaCSV, generarCSV, contenidoCSV };
 }

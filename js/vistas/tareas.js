@@ -340,7 +340,7 @@ function verDetalle(tarea, id) {
 }
 
 function exportarCSV(tarea) {
-  const blob = new Blob(['﻿' + generarCSV(tarea.trabajos)], { type: 'text/csv;charset=utf-8;' });
+  const blob = new Blob([contenidoCSV(tarea.trabajos)], { type: 'text/csv;charset=utf-8;' });
   const a = document.createElement('a');
   a.href = URL.createObjectURL(blob);
   a.download = 'notas_' + tarea.id + '.csv';
