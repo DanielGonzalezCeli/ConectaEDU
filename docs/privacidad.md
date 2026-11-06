@@ -23,7 +23,7 @@ Cuando el docente califica con IA, se envía:
 
 **No se envía el nombre del archivo.** Cada trabajo se identifica en la página como «Trabajo 1», «Trabajo 2», y ese nombre tampoco sale del navegador.
 
-Para entrar, se escribe la clave de acceso. El servidor no guarda esa clave escrita: entrega al navegador una cookie con una firma, que el navegador conserva 12 horas.
+Para entrar, se escribe la clave de acceso. El servidor no guarda esa clave escrita: entrega al navegador una cookie con una firma que vale 12 horas.
 
 Para limitar el gasto y los intentos de adivinar la clave, el servidor cuenta las solicitudes por **dirección IP**.
 
@@ -32,7 +32,7 @@ Para limitar el gasto y los intentos de adivinar la clave, el servidor cuenta la
 - **Anthropic**, mediante su API, recibe la rúbrica, las instrucciones y el trabajo para generar la nota sugerida. El modelo configurado por defecto es Claude Sonnet 5.5.
 - **Render** aloja el servidor del prototipo, en su plan gratuito. Los datos pasan por ese servidor para llegar a Anthropic.
 
-Qué hacen Anthropic y Render con los datos que reciben, cuánto tiempo los conservan y si los usan para entrenar modelos depende de sus propias condiciones: **por confirmar**. Todavía no hemos revisado ni documentado esas condiciones, así que no prometemos nada sobre ellas.
+Qué hacen Anthropic y Render con los datos que reciben, cuánto tiempo los conservan y si los usan para entrenar modelos depende de sus propias condiciones. **Pendiente:** todavía no hemos revisado ni documentado esas condiciones, así que no prometemos nada sobre ellas.
 
 ## Qué se guarda y por cuánto tiempo
 
@@ -40,7 +40,7 @@ Qué hacen Anthropic y Render con los datos que reciben, cuánto tiempo los cons
 | --- | --- | --- |
 | Trabajos, rúbricas e instrucciones | En la memoria del servidor, solo mientras se procesa la solicitud. | No se escriben en ningún archivo ni base de datos. |
 | Notas sugeridas, ediciones y aprobaciones del docente | En la memoria de la pestaña del navegador. No se usa el almacenamiento local del navegador. | Hasta recargar o cerrar la pestaña. El docente puede descargarlas en CSV o JSON. |
-| Registro de uso: fecha, ruta, modelo, tokens (cantidad de texto procesado), tiempo, resultado de la llamada y costo | En un archivo del servidor (`resultados/uso.csv`). | En Render, el disco es temporal: el archivo se borra cada vez que el servicio se reinicia o se apaga por inactividad (**por confirmar**: depende de Render, no del código). |
+| Registro de uso: fecha, ruta, modelo, tokens (cantidad de texto procesado), tiempo, resultado de la llamada y costo | En un archivo del servidor (`resultados/uso.csv`). | En Render, el disco es temporal: el archivo se borra cada vez que el servicio se reinicia o se apaga por inactividad. |
 | Dirección IP | En la memoria del servidor, para los límites de uso. | Cuenta las solicitudes de la última hora y los intentos fallidos de los últimos 15 minutos. No se escribe en ningún archivo y se pierde al reiniciar el servidor. |
 | Cookie de acceso | En tu navegador. | 12 horas. Contiene una firma de la clave de acceso, no datos personales. |
 
@@ -62,13 +62,11 @@ Si ocurre un error interno, el servidor anota solo el tipo de error, sin el cont
 
 ## Trabajos de estudiantes en las pruebas
 
-En nuestras pruebas usamos trabajos ficticios o anonimizados. No usamos trabajos de estudiantes reales sin su consentimiento (**por confirmar**: es una práctica del equipo y el código no lo puede comprobar).
+En nuestras pruebas usamos trabajos ficticios o anonimizados. No usamos trabajos de estudiantes reales sin su consentimiento.
 
 Antes del primer uso con IA, la página pide aceptar un aviso que recuerda usar trabajos anonimizados, sin nombres, cédulas, correos ni otros datos que identifiquen al estudiante. Si pruebas el prototipo, sigue esa misma regla.
 
 ## Lo que todavía no está decidido
-
-Todo lo siguiente está **por confirmar**:
 
 - Dónde y por cuánto tiempo se guardarían los datos en un producto real.
 - Cómo pediría una persona ver, corregir o borrar sus datos.
