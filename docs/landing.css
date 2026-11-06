@@ -88,10 +88,8 @@ h2 { font-size: clamp(1.75rem, 4vw, 2.6rem); max-width: 30ch; margin-bottom: 1.2
 .azul .pendientes li { border-bottom-color: var(--linea-azul); }
 .azul .pendientes li::before { background: var(--ambar); }
 
-/* Evidencia: marcadores visibles hasta que se pongan los números reales */
+/* Evidencia de las pruebas */
 .cifras.tres { grid-template-columns: repeat(3, minmax(0, 1fr)); max-width: none; }
-.completar { background: #FBEBD0; color: var(--azul); border: 1px dashed #B7770A; border-radius: 3px; padding: 0 .3em; font-family: var(--sans); font-weight: 700; }
-.cifra dt .completar { font-size: .32em; vertical-align: middle; }
 .advertencia a { color: var(--verde); text-underline-offset: 3px; }
 
 /* Equipo: nombre de pila y rol, sin fotos */
