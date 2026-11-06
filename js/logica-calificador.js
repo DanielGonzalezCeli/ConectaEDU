@@ -35,6 +35,30 @@ function aprobar(trabajo, docente, rubrica, fecha) {
   trabajo.aprobacion = { por: docente, fecha: fecha, rubrica: rubrica, nota: suma(trabajo.final) };
 }
 
+// HU-08: índices de los criterios donde la nota final difiere de la sugerida.
+function criteriosEditados(trabajo) {
+  return trabajo.final.map((v, i) => (v !== trabajo.puntos[i] ? i : -1)).filter(i => i >= 0);
+}
+
+// Estado visible de la nota: 'sugerida' (tal como la propuso la IA), 'editada'
+// (el docente la cambió y falta aprobar) o 'aprobada' (decisión del docente).
+function estadoNota(trabajo) {
+  if (trabajo.estado === 'Aprobada' && trabajo.aprobacion) return 'aprobada';
+  return criteriosEditados(trabajo).length ? 'editada' : 'sugerida';
+}
+
+// Texto y estilo de cada estado. La nota aprobada usa un estilo propio (verde,
+// con marca) para que nunca se confunda con una sugerencia.
+const ESTILO_NOTA = {
+  sugerida: { texto: 'Sugerida · sin aprobar', clase: 'e-neutro', celda: 'nota-sin-aprobar' },
+  editada: { texto: 'Editada · falta aprobar', clase: 'e-aviso', celda: 'nota-editada' },
+  aprobada: { texto: 'Aprobada por el docente', clase: 'e-ok', celda: 'nota-aprobada' }
+};
+
+function resumenNota(trabajo) {
+  return { sugerida: suma(trabajo.puntos), final: suma(trabajo.final), estado: estadoNota(trabajo), editados: criteriosEditados(trabajo) };
+}
+
 // Los de confianza baja van primero; el resto mantiene su orden.
 function ordenarParaRevision(trabajos) {
   return trabajos.slice().sort((a, b) => (a.confianza === 'Baja' ? -1 : 0) - (b.confianza === 'Baja' ? -1 : 0));
@@ -45,15 +69,29 @@ function fechaISO(fecha) {
   return fecha.getFullYear() + '-' + p(fecha.getMonth() + 1) + '-' + p(fecha.getDate()) + ' ' + p(fecha.getHours()) + ':' + p(fecha.getMinutes());
 }
 
-// CSV para el aula virtual: SOLO notas aprobadas por el docente.
+// Una celda de CSV segura: entre comillas si trae coma, comillas o salto de línea,
+// y con un apóstrofo delante si Excel la leería como fórmula (=, +, -, @).
+function celdaCSV(valor) {
+  let v = String(valor == null ? '' : valor);
+  if (/^[=+\-@\t\r]/.test(v)) v = "'" + v;
+  return /[",\r\n]/.test(v) ? '"' + v.replace(/"/g, '""') + '"' : v;
+}
+
+// HU-09: CSV para el aula virtual con SOLO las notas aprobadas por el docente.
 function generarCSV(trabajos) {
   let csv = 'Estudiante,Nota final,Aprobada por,Fecha de aprobación\n';
-  trabajos.filter(t => t.estado === 'Aprobada').forEach(t => {
-    csv += t.id + ',' + suma(t.final) + ',' + t.aprobacion.por + ',' + fechaISO(t.aprobacion.fecha) + '\n';
+  trabajos.filter(t => t.estado === 'Aprobada' && t.aprobacion).forEach(t => {
+    const nota = Math.round(suma(t.final) * 100) / 100; // evita 0.30000000000000004
+    csv += [t.id, nota, t.aprobacion.por, fechaISO(t.aprobacion.fecha)].map(celdaCSV).join(',') + '\n';
   });
   return csv;
 }
 
+// Contenido del archivo: con BOM UTF-8 para que Excel muestre bien las tildes.
+function contenidoCSV(trabajos) {
+  return '﻿' + generarCSV(trabajos);
+}
+
 if (typeof module !== 'undefined' && module.exports) {
-  module.exports = { suma, fmt, prepararTrabajos, limitarPuntos, editarCriterio, aprobar, ordenarParaRevision, fechaISO, generarCSV };
+  module.exports = { suma, fmt, prepararTrabajos, limitarPuntos, editarCriterio, aprobar, criteriosEditados, estadoNota, ESTILO_NOTA, resumenNota, ordenarParaRevision, fechaISO, celdaCSV, generarCSV, contenidoCSV };
 }

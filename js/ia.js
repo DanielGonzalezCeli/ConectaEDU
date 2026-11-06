@@ -6,7 +6,7 @@
    - Nada de trabajos se guarda en localStorage: todo vive en memoria.
    ============================================================ */
 
-const IA = { modo: 'simulado', modelo: null, llamadasUsadas: 0, limite: 0, sesion: null, avisoAceptado: false };
+const IA = { modo: 'simulado', modelo: null, llamadasUsadas: 0, limite: 0, sesion: null, aceptacionAviso: null };
 
 function modoReal() { return IA.modo === 'real'; }
 
@@ -57,20 +57,15 @@ function abrirVentana(titulo, cuerpoHTML, botones) {
   });
 }
 
-// Aviso de privacidad: una vez por sesión, antes del primer uso real.
+// Aviso de privacidad (HU-12): una vez por sesión, antes del primer envío a la IA.
+// El texto y la regla viven en js/logica-privacidad.js.
 async function asegurarAvisoPrivacidad() {
-  if (IA.avisoAceptado) return true;
-  const ok = await abrirVentana('Antes de calificar con IA real',
-    '<p>Para sugerir las notas, el texto o el PDF de cada trabajo se envía al proveedor de IA (Anthropic) por su API. ' +
-    'El servidor de ConectaEdu no guarda los trabajos: solo registra datos de uso (fecha, modelo, tokens y tiempo).</p>' +
-    '<p><b>Para pruebas usa trabajos anonimizados</b>: sin nombres, cédulas, correos ni otros datos que identifiquen al estudiante. El nombre del archivo no se envía.</p>' +
-    '<p>Los resultados viven solo en esta pestaña: al recargar la página se pierden. Descárgalos antes de salir.</p>' +
-    '<label class="casilla"><input type="checkbox" id="acepto-aviso"> Entiendo y usaré trabajos anonimizados.</label>' +
-    '<p class="error-casilla oculto" id="falta-aviso">Marca la casilla para continuar.</p>',
+  if (avisoAceptado(IA)) return true;
+  const ok = await abrirVentana(AVISO_PRIVACIDAD.titulo, htmlAvisoPrivacidad(),
     [{ texto: 'Cancelar', clase: 'fantasma', valor: () => false },
-     { texto: 'Continuar', valor: f => { if (f.querySelector('#acepto-aviso').checked) return true; f.querySelector('#falta-aviso').classList.remove('oculto'); return undefined; } }]);
-  IA.avisoAceptado = ok === true;
-  return IA.avisoAceptado;
+     { texto: 'Aceptar y continuar', valor: f => { if (f.querySelector('#acepto-aviso').checked) return true; f.querySelector('#falta-aviso').classList.remove('oculto'); return undefined; } }]);
+  if (ok === true) registrarAceptacion(IA, new Date());
+  return avisoAceptado(IA);
 }
 
 /* ---------- Lectura de archivos en el navegador ---------- */
@@ -101,6 +96,10 @@ async function leerTrabajo(archivo) {
 
 /* ---------- Llamada al calificador ---------- */
 async function pedirCalificacion(cuerpo) {
+  // Segundo candado: aunque una pantalla olvide pedir el aviso, nada sale sin aceptarlo.
+  if (!avisoAceptado(IA)) {
+    const err = new Error('Acepta el aviso de privacidad antes de calificar.'); err.codigo = 'sin_aviso'; throw err;
+  }
   let r, datos = null;
   try {
     r = await fetch('api/calificar', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify(cuerpo) });
@@ -141,7 +140,7 @@ async function calificarEnCola(items, calificarUno, alCambiar) {
             return;
           }
           t.estadoIA = 'error'; t.error = err.message;
-          if (['limite_local', 'limite_ip', 'sin_clave', 'sin_acceso', 'http_401'].includes(err.codigo)) {
+          if (['limite_local', 'limite_ip', 'sin_clave', 'sin_acceso', 'sin_aviso', 'http_401'].includes(err.codigo)) {
             detenido = true;
             cola.splice(0).forEach(x => { x.estadoIA = 'error'; x.error = err.message; });
           }

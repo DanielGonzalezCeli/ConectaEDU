@@ -5,7 +5,7 @@ services:
     name: conectaedu
     runtime: node
     plan: free
-    branch: feat/modo-real
+    branch: main
     buildCommand: npm install
     startCommand: node servidor.js
     healthCheckPath: /salud

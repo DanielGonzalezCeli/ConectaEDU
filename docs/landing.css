@@ -85,9 +85,22 @@ h2 { font-size: clamp(1.75rem, 4vw, 2.6rem); max-width: 30ch; margin-bottom: 1.2
 .pendientes { list-style: none; padding: 0; margin-top: 2rem; max-width: 46rem; }
 .pendientes li { padding: 1rem 0 1rem 2rem; border-bottom: 1px solid var(--linea-papel); position: relative; font-size: 1.15rem; }
 .pendientes li::before { content: ""; position: absolute; left: 0; top: 1.55rem; width: .9rem; height: 2px; background: var(--verde); }
+.azul .pendientes li { border-bottom-color: var(--linea-azul); }
+.azul .pendientes li::before { background: var(--ambar); }
 
-/* Equipo */
-.equipo { list-style: none; padding: 0; display: flex; flex-wrap: wrap; gap: .75rem 2.5rem; margin-top: 2rem; font-family: var(--serif); font-size: 1.4rem; }
+/* Evidencia: marcadores visibles hasta que se pongan los números reales */
+.cifras.tres { grid-template-columns: repeat(3, minmax(0, 1fr)); max-width: none; }
+.completar { background: #FBEBD0; color: var(--azul); border: 1px dashed #B7770A; border-radius: 3px; padding: 0 .3em; font-family: var(--sans); font-weight: 700; }
+.cifra dt .completar { font-size: .32em; vertical-align: middle; }
+.advertencia a { color: var(--verde); text-underline-offset: 3px; }
+
+/* Equipo: nombre de pila y rol, sin fotos */
+.equipo { list-style: none; padding: 0; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 1.5rem; margin-top: 2rem; }
+.equipo li { border-top: 3px solid var(--verde); padding-top: 1rem; display: flex; flex-direction: column; gap: .25rem; }
+.equipo .nombre { font-family: var(--serif); font-size: 1.5rem; font-weight: 700; }
+.equipo .rol { color: var(--tinta-suave); }
+.enlace-repo { margin-top: 2rem; }
+.enlace-repo a { color: var(--verde); font-weight: 700; text-underline-offset: 3px; }
 
 /* Pie */
 .pie { background: var(--azul); color: var(--claro-suave); border-top: 1px solid var(--linea-azul); padding: 2.5rem 0; font-size: .95rem; }
@@ -117,7 +130,8 @@ h2 { font-size: clamp(1.75rem, 4vw, 2.6rem); max-width: 30ch; margin-bottom: 1.2
 
 /* Tabletas */
 @media (max-width: 900px) {
-  .pasos { grid-template-columns: minmax(0, 1fr); gap: 2rem; }
+  .pasos, .cifras.tres { grid-template-columns: minmax(0, 1fr); gap: 2rem; }
+  .equipo { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 }
 
 /* Celulares (desde 360 px) */
@@ -129,7 +143,7 @@ h2 { font-size: clamp(1.75rem, 4vw, 2.6rem); max-width: 30ch; margin-bottom: 1.2
   .acciones, .accion { width: 100%; }
   .boton { display: block; text-align: center; width: 100%; }
   .cifras { grid-template-columns: minmax(0, 1fr); gap: 2rem; }
-  .equipo { flex-direction: column; font-size: 1.25rem; }
+  .equipo { grid-template-columns: minmax(0, 1fr); gap: 1rem; }
   .pie-fila { flex-direction: column; }
   /* La tabla de privacidad se apila: cada fila es una ficha con su encabezado. */
   .tabla thead { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }

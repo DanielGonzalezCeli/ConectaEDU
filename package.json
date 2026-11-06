@@ -1,6 +1,6 @@
 {
   "name": "conectaedu",
-  "version": "0.1.0",
+  "version": "0.3.0",
   "private": true,
   "description": "ConectaEdu · prototipo clicable con datos de ejemplo (Fase 0)",
   "scripts": {

@@ -76,3 +76,105 @@ test('error 6 corregido: el panel del curso tiene datos coherentes', () => {
   assert.equal(DATOS.curso.length, 8);
   DATOS.curso.forEach(e => assert.ok(e.atasco === null || (e.atasco >= 1 && e.atasco <= DATOS.problema.pasos.length)));
 });
+
+/* ---------- HU-08: editar por criterio y aprobar; la aprobada se distingue ---------- */
+test('HU-08: recién calificada, la nota está "sugerida" y no hay criterios editados', () => {
+  const [t] = nuevos();
+  assert.equal(C.estadoNota(t), 'sugerida');
+  assert.deepEqual(C.criteriosEditados(t), []);
+});
+
+test('HU-08: editar un criterio la deja "editada" y marca ese criterio', () => {
+  const [t] = nuevos();
+  C.editarCriterio(t, 1, '1', criterios);
+  assert.equal(C.estadoNota(t), 'editada');
+  assert.deepEqual(C.criteriosEditados(t), [1]);
+  assert.deepEqual(C.resumenNota(t), { sugerida: 9, final: 7.5, estado: 'editada', editados: [1] });
+});
+
+test('HU-08: aprobar deja la nota "aprobada", con quién y cuándo', () => {
+  const [t] = nuevos();
+  C.editarCriterio(t, 0, '3', criterios);
+  C.aprobar(t, 'Docente de ejemplo', DATOS.rubrica.nombre, fecha);
+  assert.equal(C.estadoNota(t), 'aprobada');
+  assert.equal(t.aprobacion.por, 'Docente de ejemplo');
+  assert.equal(t.aprobacion.fecha, fecha);
+  assert.equal(t.aprobacion.nota, 8.5);
+});
+
+test('HU-08: el docente puede aprobar la sugerencia sin cambiarla', () => {
+  const [t] = nuevos();
+  C.aprobar(t, 'Docente de ejemplo', DATOS.rubrica.nombre, fecha);
+  assert.equal(C.estadoNota(t), 'aprobada');
+  assert.deepEqual(C.criteriosEditados(t), []);
+});
+
+test('HU-08: editar una nota aprobada la vuelve "editada" y exige aprobar otra vez', () => {
+  const [t] = nuevos();
+  C.aprobar(t, 'Docente de ejemplo', DATOS.rubrica.nombre, fecha);
+  C.editarCriterio(t, 2, '0', criterios);
+  assert.equal(C.estadoNota(t), 'editada');
+  assert.equal(t.aprobacion, null);
+});
+
+test('HU-08: si vuelve al valor sugerido sin aprobar, sigue siendo una sugerencia', () => {
+  const [t] = nuevos();
+  C.editarCriterio(t, 0, '1', criterios);
+  C.editarCriterio(t, 0, String(t.puntos[0]), criterios);
+  assert.equal(C.estadoNota(t), 'sugerida');
+});
+
+test('HU-08: la nota aprobada tiene un estilo distinto de la sugerida y de la editada', () => {
+  const clases = ['sugerida', 'editada', 'aprobada'].map(e => C.ESTILO_NOTA[e].celda);
+  assert.equal(new Set(clases).size, 3);
+  assert.equal(C.ESTILO_NOTA.aprobada.clase, 'e-ok');
+  assert.match(C.ESTILO_NOTA.sugerida.texto, /sin aprobar/);
+});
+
+/* ---------- HU-09: CSV solo con notas aprobadas ---------- */
+test('HU-09: una nota editada después de aprobarla no sale en el CSV', () => {
+  const ts = nuevos();
+  C.aprobar(ts[0], 'Docente de ejemplo', DATOS.rubrica.nombre, fecha);
+  C.aprobar(ts[1], 'Docente de ejemplo', DATOS.rubrica.nombre, fecha);
+  C.editarCriterio(ts[1], 0, '0', criterios);
+  const filas = C.generarCSV(ts).trim().split('\n');
+  assert.equal(filas.length, 2, 'encabezado + 1 aprobada');
+  assert.match(filas[1], /^Estudiante 01,/);
+});
+
+test('HU-09: sugeridas y editadas sin aprobar no salen en el CSV', () => {
+  const ts = nuevos();
+  C.editarCriterio(ts[0], 0, '1', criterios);
+  assert.equal(C.generarCSV(ts), 'Estudiante,Nota final,Aprobada por,Fecha de aprobación\n');
+});
+
+test('HU-09: comas, comillas y saltos de línea no rompen las columnas', () => {
+  const [t] = nuevos();
+  t.id = 'Trabajo 1, grupo "A"';
+  C.aprobar(t, 'Docente de ejemplo', DATOS.rubrica.nombre, fecha);
+  const fila = C.generarCSV([t]).split('\n')[1];
+  assert.equal(fila, '"Trabajo 1, grupo ""A""",9,Docente de ejemplo,2026-10-05 09:30');
+  assert.equal(C.celdaCSV('línea 1\nlínea 2'), '"línea 1\nlínea 2"');
+});
+
+test('HU-09: un texto que Excel leería como fórmula se exporta como texto', () => {
+  assert.equal(C.celdaCSV('=HYPERLINK("http://x")'), '"\'=HYPERLINK(""http://x"")"');
+  assert.equal(C.celdaCSV('+57'), "'+57");
+  assert.equal(C.celdaCSV('@SUMA'), "'@SUMA");
+  assert.equal(C.celdaCSV(-1), "'-1");
+});
+
+test('HU-09: la nota se redondea a dos decimales', () => {
+  const [t] = nuevos();
+  t.final = [0.1, 0.2, 0, 0];
+  C.aprobar(t, 'Docente de ejemplo', DATOS.rubrica.nombre, fecha);
+  assert.match(C.generarCSV([t]).split('\n')[1], /^Estudiante 01,0\.3,/);
+});
+
+test('HU-09: el archivo empieza con BOM UTF-8 para que Excel muestre las tildes', () => {
+  const ts = nuevos();
+  C.aprobar(ts[0], 'Docente de ejemplo', DATOS.rubrica.nombre, fecha);
+  const contenido = C.contenidoCSV(ts);
+  assert.equal(contenido.charCodeAt(0), 0xFEFF);
+  assert.ok(contenido.includes('Fecha de aprobación'), 'la tilde se conserva');
+});
