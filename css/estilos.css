@@ -247,6 +247,14 @@ tbody tr:hover { background: #FAFBFE; }
 tr.fila-aprobada > td:first-child { box-shadow: inset 4px 0 0 var(--verde); }
 input.num.editado { border-color: var(--ambar); background: var(--ambar-f); }
 .detalle.aprobada { border-color: var(--verde); box-shadow: inset 4px 0 0 var(--verde); }
+/* Tutor real */
+.msg .tipo-respuesta { display: inline-flex; margin: 0 0 6px; }
+.msg.tutor .etiqueta.tipo-respuesta { display: table; }
+.cita-tutor { margin: 8px 0 0; padding: 6px 10px; border-left: 3px solid var(--turquesa); background: var(--turquesa-f); border-radius: 0 8px 8px 0; font-style: italic; color: #24414A; font-size: 13.5px; }
+.cita-tutor span { display: block; font-style: normal; font-size: 12px; color: var(--turquesa); font-weight: 600; margin-top: 3px; }
+.aviso-cita { color: var(--suave); }
+.msg.error { border-color: #F2B8B3; background: var(--rojo-f); color: var(--rojo); }
+.resumen-material { margin-top: 8px; }
 .leyenda-notas { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin: 10px 0 0; font-size: 13px; }
 
 /* ---------- Chat del tutor ---------- */

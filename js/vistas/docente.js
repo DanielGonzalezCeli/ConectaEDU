@@ -23,7 +23,7 @@ function vistaMisClases() {
   return {
     html:
       '<div class="encabezado"><div><h1>Hola, ' + esc(APP.usuario.nombre) + '</h1><p>Estas son tus clases de este periodo.</p></div>' +
-      '<a class="btn" href="#/docente/nueva-clase">' + icono('mas') + 'Crear clase</a></div>' +
+      '<div class="fila"><a class="btn sec" href="#/tutor-real">' + icono('chat') + 'Tutor con tu material</a><a class="btn" href="#/docente/nueva-clase">' + icono('mas') + 'Crear clase</a></div></div>' +
       '<div class="tarjeta"><h2>' + icono('reloj') + 'Pendientes</h2><p class="nota">Lo que necesita tu atención, calculado a partir de tus clases.</p>' + listaPend + '</div>' +
       '<h2 style="font-size:18px;color:var(--puce);margin:26px 0 14px">Mis clases</h2>' +
       '<div class="rejilla">' + APP.clases.map(c => tarjetaClase(c, '/docente/clase/' + c.id + '/resumen')).join('') +

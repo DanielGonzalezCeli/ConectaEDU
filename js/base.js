@@ -4,7 +4,7 @@
    No se guarda nada en el navegador ni en un servidor.
    ============================================================ */
 
-const APP = { usuario: null, clases: [], unidas: [] };
+const APP = { usuario: null, clases: [], unidas: [], tutorReal: null };
 
 const COLORES = ['turquesa', 'azul', 'violeta', 'coral', 'ambar', 'verde'];
 
@@ -24,6 +24,7 @@ function crearTarea(datos) {
 function iniciarDatos() {
   APP.usuario = null;
   APP.unidas = [];
+  APP.tutorReal = crearEstadoTutorReal(); // material y chat del tutor real: solo en memoria
   APP.clases = DATOS.clasesEjemplo.map(c => ({
     id: c.id, nombre: c.nombre, materia: c.materia, periodo: c.periodo, paralelo: c.paralelo, color: c.color,
     codigo: c.codigo, tutorDemo: c.tutorDemo, ejemplo: true,
