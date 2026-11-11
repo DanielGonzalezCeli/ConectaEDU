@@ -12,7 +12,8 @@ const RUTAS = [
   [/^\/docente\/clase\/([\w-]+)\/tareas\/([\w-]+)$/, vistaTarea, 'docente'],
   [/^\/docente\/clase\/([\w-]+)\/(resumen|material|tareas|actividad|estudiantes)$/, vistaClaseDocente, 'docente'],
   [/^\/estudiante$/, vistaEstudianteInicio, 'estudiante'],
-  [/^\/estudiante\/clase\/([\w-]+)$/, vistaTutorEstudiante, 'estudiante']
+  [/^\/estudiante\/clase\/([\w-]+)$/, vistaTutorEstudiante, 'estudiante'],
+  [/^\/tutor-real$/, vistaTutorReal, '*'] // cualquier rol con sesión
 ];
 
 let rutaAnterior = null;
@@ -23,7 +24,8 @@ function render() {
   const ruta = location.hash.slice(1) || '/ingresar';
   const coincidencia = RUTAS.map(([re, vista, rol]) => ({ m: ruta.match(re), vista, rol })).find(x => x.m);
   if (!coincidencia) { ir(inicioDelRol()); return; }
-  if (coincidencia.rol && (!APP.usuario || APP.usuario.rol !== coincidencia.rol)) { ir(APP.usuario ? inicioDelRol() : '/ingresar'); return; }
+  if (coincidencia.rol === '*' && !APP.usuario) { ir('/ingresar'); return; }
+  if (coincidencia.rol && coincidencia.rol !== '*' && (!APP.usuario || APP.usuario.rol !== coincidencia.rol)) { ir(APP.usuario ? inicioDelRol() : '/ingresar'); return; }
   if (!coincidencia.rol && APP.usuario) { ir(inicioDelRol()); return; }
 
   const v = coincidencia.vista(...coincidencia.m.slice(1));

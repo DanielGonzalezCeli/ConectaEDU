@@ -10,6 +10,8 @@ function vistaEstudianteInicio() {
   return {
     html:
       '<div class="encabezado"><div><h1>Hola, ' + esc(APP.usuario.nombre) + '</h1><p>Tus clases y tus tutores.</p></div></div>' +
+      '<div class="tarjeta" style="max-width:640px"><h2>' + icono('chat') + 'Tutor con el material de tu docente</h2><p class="nota">Pregunta sobre el material que preparó tu docente: el tutor te guía con pistas y te dice de dónde sale cada respuesta.</p>' +
+        '<a class="btn" href="#/tutor-real">' + icono('flecha') + 'Abrir el tutor</a></div>' +
       '<div class="tarjeta" style="max-width:640px"><h2>' + icono('llave') + 'Unirme a una clase</h2><p class="nota">Escribe el código que te dio tu docente.</p>' +
         '<form id="form-unir" class="fila"><input type="text" id="codigo" placeholder="Ej.: ESTAD-7K2" style="flex:1;min-width:180px;text-transform:uppercase;letter-spacing:1px" autocomplete="off"><button class="btn" type="submit">Unirme</button></form>' +
         '<p class="nota" style="margin:10px 0 0">Para la demostración: <a href="#" id="usar-codigo"><b>ESTAD-7K2</b></a> (Fundamentos de Estadística, tiene tutor de ejemplo).</p>' +
@@ -71,7 +73,7 @@ function vistaTutorEstudiante(id) {
   return {
     html: miga +
       '<div class="encabezado"><div><h1>Tutor de ' + esc(clase.nombre) + '</h1><p>Te guía con preguntas y pistas. No te da la respuesta: la construyes tú.</p></div>' +
-        '<span class="etiqueta e-sim">tutor simulado, sin IA</span></div>' +
+        '<span class="etiqueta e-sim">prototipo · tutor simulado, sin IA</span></div>' +
       '<div class="lado">' +
         '<div>' +
           '<div class="tarjeta"><h2>' + icono('flecha') + 'Tu avance</h2><p class="nota">Media y desviación estándar muestral.</p><ul class="camino" id="camino">' + caminoHTML(st) + '</ul>' +

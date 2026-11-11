@@ -32,7 +32,7 @@ function pintarBanner() {
   // Las partes "solo-ancho" se ocultan en celular para que el aviso no ocupe media pantalla.
   b.innerHTML = '<b>IA REAL</b> · <span class="solo-ancho">modelo </span>' + esc(IA.modelo) + ' · <span class="solo-ancho">llamadas usadas en la última hora: </span>' + IA.llamadasUsadas + ' de ' + IA.limite + '<span class="solo-movil"> llamadas por hora</span>' +
     (s && s.llamadas ? '<span class="solo-ancho"> · tokens del servidor: ' + s.tokensEntrada.toLocaleString('es') + ' de entrada y ' + s.tokensSalida.toLocaleString('es') + ' de salida</span>' : '') +
-    '. Las notas son <b>sugerencias</b><span class="solo-ancho">: el docente revisa y aprueba cada una</span>. El tutor<span class="solo-ancho">, las cuentas</span> y las clases de ejemplo siguen simulados.';
+    '. Las notas son <b>sugerencias</b><span class="solo-ancho">: el docente revisa y aprueba cada una</span>. <b>Prototipo:</b> las cuentas, las clases de ejemplo y su tutor siguen simulados<span class="solo-ancho">; el tutor real está en «Tutor con tu material»</span>.';
 }
 
 /* ---------- Ventana modal sencilla ---------- */
@@ -103,6 +103,26 @@ async function pedirCalificacion(cuerpo) {
   let r, datos = null;
   try {
     r = await fetch('api/calificar', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify(cuerpo) });
+    datos = await r.json();
+  } catch (e) {
+    const err = new Error('No se pudo conectar con el servidor de ConectaEdu.'); err.codigo = 'red'; throw err;
+  }
+  if (datos && datos.estadoIA) actualizarEstadoIA(datos.estadoIA);
+  if (!r.ok) {
+    const err = new Error((datos && datos.error && datos.error.mensaje) || 'Error ' + r.status + '.');
+    err.codigo = (datos && datos.error && datos.error.codigo) || 'http_' + r.status;
+    if (r.status === 401) err.message = 'Tu acceso venció. Recarga la página e ingresa la clave de acceso.';
+    throw err;
+  }
+  return datos;
+}
+
+/* ---------- Llamada al tutor real ---------- */
+// Envía el material y la pregunta. El servidor no guarda nada.
+async function pedirTutor(cuerpo) {
+  let r, datos = null;
+  try {
+    r = await fetch('api/tutor', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify(cuerpo) });
     datos = await r.json();
   } catch (e) {
     const err = new Error('No se pudo conectar con el servidor de ConectaEdu.'); err.codigo = 'red'; throw err;
