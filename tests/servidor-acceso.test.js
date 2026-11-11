@@ -121,3 +121,44 @@ test('el limitador libera cupo cuando pasa la ventana', () => {
   t = 1001;
   assert.ok(l.permitir('a'));
 });
+
+/* ---------- /api/tutor tiene los mismos candados que /api/calificar ---------- */
+const cuerpoTutor = JSON.stringify({ material: [{ nombre: 'Guía', texto: 'La mediana es el valor central de los datos ordenados.' }], pregunta: '¿Qué es la mediana?', historial: [], reglas: {} });
+const tutorOk = () => respuestaModelo({ respuesta: '¿Qué harías primero con los datos?', documentos_usados: ['Guía'], cita: 'La mediana es el valor central', tipo: 'pregunta', intento_respuesta_directa: false });
+const revisorOk = () => respuestaModelo({ filtra_respuesta: false, motivo: 'Solo pregunta.' });
+const preguntarTutor = (pedir, ip = '200.1.1.1') => pedir('/api/tutor', { method: 'POST', headers: { 'content-type': 'application/json', 'x-forwarded-for': ip }, body: cuerpoTutor });
+
+test('/api/tutor pide la clave de acceso y no llama al proveedor sin ella', async () => {
+  const f = crearFetchFalso([tutorOk(), revisorOk()]);
+  await conServidor({ PROVEEDOR_IA_CLAVE: 'clave-falsa', CLAVE_ACCESO: ACCESO }, async pedir => {
+    const r = await preguntarTutor(pedir);
+    assert.equal(r.status, 401);
+    assert.equal((await r.json()).error.codigo, 'sin_acceso');
+  }, f);
+  assert.equal(f.llamadas.length, 0);
+});
+
+test('/api/tutor respeta el límite por IP', async () => {
+  const f = crearFetchFalso([tutorOk(), revisorOk(), tutorOk(), revisorOk()]);
+  await conServidor({ PROVEEDOR_IA_CLAVE: 'clave-falsa', LIMITE_POR_IP_POR_HORA: '1', CONFIAR_PROXY: '1' }, async pedir => {
+    assert.equal((await preguntarTutor(pedir, '200.1.1.1')).status, 200);
+    const segunda = await preguntarTutor(pedir, '200.1.1.1');
+    assert.equal(segunda.status, 429);
+    assert.equal((await segunda.json()).error.codigo, 'limite_ip');
+    assert.equal((await preguntarTutor(pedir, '200.2.2.2')).status, 200, 'otra IP tiene su propio cupo');
+  }, f);
+  assert.equal(f.llamadas.length, 4, 'dos preguntas aceptadas × (tutor + revisor)');
+});
+
+test('/api/tutor gasta del mismo tope por hora: cada pregunta usa dos llamadas (tutor y revisor)', async () => {
+  const f = crearFetchFalso([tutorOk(), revisorOk(), tutorOk(), revisorOk()]);
+  await conServidor({ PROVEEDOR_IA_CLAVE: 'clave-falsa', LIMITE_LLAMADAS_POR_HORA: '2' }, async pedir => {
+    const primera = await preguntarTutor(pedir);
+    assert.equal(primera.status, 200);
+    assert.equal((await primera.json()).estadoIA.llamadasUsadas, 2);
+    const segunda = await preguntarTutor(pedir);
+    assert.equal(segunda.status, 429);
+    assert.equal((await segunda.json()).error.codigo, 'limite_local');
+  }, f);
+  assert.equal(f.llamadas.length, 2);
+});
