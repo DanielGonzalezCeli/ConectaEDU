@@ -11,7 +11,7 @@ Esta página explica cómo trata los datos el prototipo de ConectaEDU publicado 
 - Para sugerir una nota, la rúbrica y el trabajo se envían a Anthropic, el proveedor de IA.
 - El servidor de ConectaEDU no guarda trabajos ni rúbricas. Solo anota datos de uso: fecha, modelo, cantidad de texto procesado, tiempo y costo.
 - Las notas sugeridas y aprobadas viven solo en tu navegador y se pierden al recargar la página.
-- No hay cuentas de usuario: se entra con una clave de acceso compartida.
+- No hay cuentas de usuario ni clave de acceso: la demostración es de acceso libre.
 
 ## Qué datos entran
 
@@ -23,9 +23,7 @@ Cuando el docente califica con IA, se envía:
 
 **No se envía el nombre del archivo.** Cada trabajo se identifica en la página como «Trabajo 1», «Trabajo 2», y ese nombre tampoco sale del navegador.
 
-Para entrar, se escribe la clave de acceso. El servidor no guarda esa clave escrita: entrega al navegador una cookie con una firma, que el navegador conserva 12 horas.
-
-Para limitar el gasto y los intentos de adivinar la clave, el servidor cuenta las solicitudes por **dirección IP**.
+Para limitar el gasto, el servidor cuenta las solicitudes por **dirección IP**.
 
 ## A quién se envían
 
@@ -41,8 +39,7 @@ Qué hacen Anthropic y Render con los datos que reciben, cuánto tiempo los cons
 | Trabajos, rúbricas e instrucciones | En la memoria del servidor, solo mientras se procesa la solicitud. | No se escriben en ningún archivo ni base de datos. |
 | Notas sugeridas, ediciones y aprobaciones del docente | En la memoria de la pestaña del navegador. No se usa el almacenamiento local del navegador. | Hasta recargar o cerrar la pestaña. El docente puede descargarlas en CSV o JSON. |
 | Registro de uso: fecha, ruta, modelo, tokens (cantidad de texto procesado), tiempo, resultado de la llamada y costo | En un archivo del servidor (`resultados/uso.csv`). | En Render, el disco es temporal: el archivo se borra cada vez que el servicio se reinicia o se apaga por inactividad (**por confirmar**: depende de Render, no del código). |
-| Dirección IP | En la memoria del servidor, para los límites de uso. | Cuenta las solicitudes de la última hora y los intentos fallidos de los últimos 15 minutos. No se escribe en ningún archivo y se pierde al reiniciar el servidor. |
-| Cookie de acceso | En tu navegador. | 12 horas. Contiene una firma de la clave de acceso, no datos personales. |
+| Dirección IP | En la memoria del servidor, para los límites de uso. | Cuenta las solicitudes de la última hora. No se escribe en ningún archivo y se pierde al reiniciar el servidor. |
 
 Si ocurre un error interno, el servidor anota solo el tipo de error, sin el contenido del trabajo.
 
@@ -56,7 +53,7 @@ Si ocurre un error interno, el servidor anota solo el tipo de error, sin el cont
 
 ## Quién tiene acceso
 
-- **Quien tiene la clave de acceso** puede usar la demostración. Cada persona ve solo los resultados de su propia pestaña: las notas no se comparten entre navegadores.
+- **Cualquier persona con la dirección** puede usar la demostración. Cada persona ve solo los resultados de su propia pestaña: las notas no se comparten entre navegadores.
 - **El equipo de ConectaEDU** administra el servidor y puede ver el registro de uso, que no incluye el contenido de los trabajos.
 - **Anthropic** recibe el contenido enviado para calificarlo, según lo explicado arriba.
 

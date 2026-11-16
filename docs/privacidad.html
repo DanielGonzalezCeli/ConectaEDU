@@ -39,7 +39,7 @@
         <li>Para sugerir una nota, la rúbrica y el trabajo se envían a Anthropic, el proveedor de IA.</li>
         <li>El servidor de ConectaEDU no guarda trabajos ni rúbricas. Solo anota datos de uso: fecha, modelo, cantidad de texto procesado, tiempo y costo.</li>
         <li>Las notas sugeridas y aprobadas viven solo en tu navegador y se pierden al recargar la página.</li>
-        <li>No hay cuentas de usuario: se entra con una clave de acceso compartida.</li>
+        <li>No hay cuentas de usuario ni clave de acceso: la demostración es de acceso libre.</li>
       </ul>
     </section>
 
@@ -52,8 +52,7 @@
         <li><strong>El trabajo:</strong> el texto pegado o el contenido del archivo (.txt, .md o PDF de hasta 5 MB).</li>
       </ul>
       <p><strong>No se envía el nombre del archivo.</strong> Cada trabajo se identifica en la página como «Trabajo 1», «Trabajo 2», y ese nombre tampoco sale del navegador.</p>
-      <p>Para entrar, se escribe la clave de acceso. El servidor no guarda esa clave escrita: entrega al navegador una cookie con una firma que vale 12 horas.</p>
-      <p>Para limitar el gasto y los intentos de adivinar la clave, el servidor cuenta las solicitudes por <strong>dirección IP</strong>.</p>
+      <p>Para limitar el gasto, el servidor cuenta las solicitudes por <strong>dirección IP</strong>.</p>
     </section>
 
     <section aria-labelledby="titulo-proveedor">
@@ -90,12 +89,7 @@
           <tr>
             <td data-titulo="Dato">Dirección IP</td>
             <td data-titulo="Dónde">En la memoria del servidor, para los límites de uso.</td>
-            <td data-titulo="Por cuánto tiempo">Cuenta las solicitudes de la última hora y los intentos fallidos de los últimos 15 minutos. No se escribe en ningún archivo y se pierde al reiniciar el servidor.</td>
-          </tr>
-          <tr>
-            <td data-titulo="Dato">Cookie de acceso</td>
-            <td data-titulo="Dónde">En tu navegador.</td>
-            <td data-titulo="Por cuánto tiempo">12 horas. Contiene una firma de la clave de acceso, no datos personales.</td>
+            <td data-titulo="Por cuánto tiempo">Cuenta las solicitudes de la última hora. No se escribe en ningún archivo y se pierde al reiniciar el servidor.</td>
           </tr>
         </tbody>
       </table>
@@ -116,7 +110,7 @@
     <section aria-labelledby="titulo-acceso">
       <h2 id="titulo-acceso">Quién tiene acceso</h2>
       <ul>
-        <li><strong>Quien tiene la clave de acceso</strong> puede usar la demostración. Cada persona ve solo los resultados de su propia pestaña: las notas no se comparten entre navegadores.</li>
+        <li><strong>Cualquier persona con la dirección</strong> puede usar la demostración. Cada persona ve solo los resultados de su propia pestaña: las notas no se comparten entre navegadores.</li>
         <li><strong>El equipo de ConectaEDU</strong> administra el servidor y puede ver el registro de uso, que no incluye el contenido de los trabajos.</li>
         <li><strong>Anthropic</strong> recibe el contenido enviado para calificarlo, según lo explicado arriba.</li>
       </ul>

@@ -1,35 +1,28 @@
 # Despliegue en Render
 
-Pasos para publicar el PMV con IA real detrás de una clave de acceso, y para preparar el QR de la demostración.
+Pasos para publicar el PMV con IA real y para preparar el QR de la demostración.
 
 ## Qué protege al despliegue
 
-- **No hay cuentas de usuario.** Todas las personas entran con la misma clave de acceso; el servidor no distingue quién es quién. El «Iniciar sesión» de docente o estudiante dentro de la página es parte de la demostración simulada.
-- **Clave de acceso (`CLAVE_ACCESO`).** Sin ella no se ve la página ni se puede llamar a la IA. Al entrar, el navegador recibe una cookie firmada que dura 12 horas; la clave no viaja de vuelta. Diez intentos fallidos desde la misma IP bloquean el acceso durante 15 minutos.
-- **Límites de gasto.** `LIMITE_LLAMADAS_POR_HORA` (60 por defecto) para todo el servidor y `LIMITE_POR_IP_POR_HORA` (40 por defecto) por conexión. Quienes comparten la misma red wifi comparten IP pública.
-- **`/salud`.** Responde `{"estado":"ok"}` sin pedir acceso; Render la usa para saber si el servicio está vivo.
-- **Arranque seguro.** Si el servidor escucha fuera de localhost con IA real y sin `CLAVE_ACCESO`, se niega a arrancar.
+- **No hay cuentas de usuario ni clave de acceso.** Cualquiera con la dirección puede usar la página, el calificador y el tutor; el servidor no distingue quién es quién. El «Iniciar sesión» de docente o estudiante dentro de la página es parte de la demostración simulada.
+- **Límites de gasto (la única protección del presupuesto).** `LIMITE_LLAMADAS_POR_HORA` (60 por defecto) para todo el servidor y `LIMITE_POR_IP_POR_HORA` (40 por defecto) por conexión. Quienes comparten la misma red wifi comparten IP pública.
+- **`/salud`.** Responde `{"estado":"ok"}`; Render la usa para saber si el servicio está vivo.
 - La clave de la IA se escribe solo en el panel de Render. No está en `render.yaml` ni en el repositorio.
 
 ## Pasos
 
 1. Entra a <https://dashboard.render.com> con tu cuenta de GitHub.
 2. **New → Blueprint** y elige el repositorio `DanielGonzalezCeli/ConectaEDU`. Render lee `render.yaml` de la rama `main`. Si el Blueprint ya existía con otra rama, cámbiala a `main` en la configuración del Blueprint, en el panel de Render.
-3. Te pedirá los valores secretos:
-   - `PROVEEDOR_IA_CLAVE`: tu clave del proveedor de IA.
-   - `CLAVE_ACCESO`: una frase larga para la demostración (por ejemplo, tres palabras y un número). Cámbiala después del pitch.
+3. Te pedirá el valor secreto `PROVEEDOR_IA_CLAVE`: tu clave del proveedor de IA. Si en el panel quedó una variable `CLAVE_ACCESO` de antes, puedes borrarla: el servidor ya no la usa.
 4. **Apply.** Cuando termine, Render muestra la dirección, por ejemplo `https://conectaedu.onrender.com` (si el nombre está ocupado, agrega un sufijo).
 5. Comprueba:
    - `https://<tu-direccion>/salud` → `{"estado":"ok"}`.
-   - `https://<tu-direccion>/` → pide la clave de acceso.
-   - Después de entrar, el banner superior dice **IA REAL · modelo claude-sonnet-5-5**.
+   - `https://<tu-direccion>/` → abre la página directamente, sin pedir clave.
+   - El banner superior dice **IA REAL · modelo claude-sonnet-5-5**.
 
 ## El QR
 
-Hay dos formas:
-
-- **QR a la dirección simple** (`https://<tu-direccion>/`): quien lo escanea escribe la clave de acceso, que muestran en la diapositiva. Es la opción más segura.
-- **QR con la clave incluida** (`https://<tu-direccion>/?acceso=<CLAVE_ACCESO>`): entra directo y la clave desaparece de la barra de direcciones. Cualquiera que fotografíe el QR puede entrar, así que cambien la clave al terminar.
+El QR apunta a la dirección simple (`https://<tu-direccion>/`) y entra directo. Como no hay clave, cualquiera que tenga la dirección puede usar la IA hasta los límites por hora; si les preocupa el gasto, bajen `LIMITE_LLAMADAS_POR_HORA` en el panel de Render después del pitch.
 
 ## Antes del pitch
 

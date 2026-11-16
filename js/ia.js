@@ -111,7 +111,6 @@ async function pedirCalificacion(cuerpo) {
   if (!r.ok) {
     const err = new Error((datos && datos.error && datos.error.mensaje) || 'Error ' + r.status + '.');
     err.codigo = (datos && datos.error && datos.error.codigo) || 'http_' + r.status;
-    if (r.status === 401) err.message = 'Tu acceso venció. Recarga la página e ingresa la clave de acceso.';
     throw err;
   }
   return datos;
@@ -131,7 +130,6 @@ async function pedirTutor(cuerpo) {
   if (!r.ok) {
     const err = new Error((datos && datos.error && datos.error.mensaje) || 'Error ' + r.status + '.');
     err.codigo = (datos && datos.error && datos.error.codigo) || 'http_' + r.status;
-    if (r.status === 401) err.message = 'Tu acceso venció. Recarga la página e ingresa la clave de acceso.';
     throw err;
   }
   return datos;
@@ -160,7 +158,7 @@ async function calificarEnCola(items, calificarUno, alCambiar) {
             return;
           }
           t.estadoIA = 'error'; t.error = err.message;
-          if (['limite_local', 'limite_ip', 'sin_clave', 'sin_acceso', 'sin_aviso', 'http_401'].includes(err.codigo)) {
+          if (['limite_local', 'limite_ip', 'sin_clave', 'sin_aviso', 'http_401'].includes(err.codigo)) {
             detenido = true;
             cola.splice(0).forEach(x => { x.estadoIA = 'error'; x.error = err.message; });
           }
