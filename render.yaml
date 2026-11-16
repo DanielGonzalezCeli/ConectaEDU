@@ -27,5 +27,3 @@ services:
         value: medium
       - key: PROVEEDOR_IA_CLAVE
         sync: false
-      - key: CLAVE_ACCESO
-        sync: false

@@ -11,7 +11,7 @@ Proyecto de Emprendimiento Tecnológico · Ingeniería de Sistemas · PUCE · NR
 - [Política de privacidad](https://danielgonzalezceli.github.io/ConectaEDU/privacidad.html)
 - [Tablero de GitHub Projects](https://github.com/users/DanielGonzalezCeli/projects/1)
 
-La aplicación publicada usa una clave de acceso compartida que el equipo facilita para la demostración. Las cuentas, las clases y el tutor de Fundamentos de Estadística usan datos de ejemplo.
+La aplicación publicada es de acceso libre: no pide clave. Las cuentas, las clases y el tutor de Fundamentos de Estadística usan datos de ejemplo.
 
 ## Funcionalidades
 
@@ -39,7 +39,7 @@ npm start
 
 Abre [http://localhost:8000](http://localhost:8000).
 
-Para usar el calificador y el tutor con IA, crea un archivo `.env` a partir de `.env.example` y configura `PROVEEDOR_IA_CLAVE`. Para proteger el acceso al servicio con una clave compartida, configura `CLAVE_ACCESO`. Mantén las claves en el servidor y fuera del repositorio.
+Para usar el calificador y el tutor con IA, crea un archivo `.env` a partir de `.env.example` y configura `PROVEEDOR_IA_CLAVE`. Mantén las claves en el servidor y fuera del repositorio.
 
 Para comprobar la conexión con el proveedor de IA, ejecuta:
 
@@ -55,7 +55,7 @@ Consulta también la [guía de despliegue en Render](docs/despliegue-render.md).
 npm test
 ```
 
-La suite cubre la calificación, la aprobación de notas, el tutor y los controles de acceso y límites del servidor. Las pruebas automatizadas usan respuestas simuladas del proveedor de IA.
+La suite cubre la calificación, la aprobación de notas, el tutor y los límites de uso del servidor. Las pruebas automatizadas usan respuestas simuladas del proveedor de IA.
 
 ## Resultados de validación
 
